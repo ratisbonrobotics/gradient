@@ -1,0 +1,10 @@
+{
+    "editor.formatOnSave": true,
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/workspaces/gradient",
+            "binaryPath": "/workspaces/gradient/executable.out",
+            "binaryArgs": []
+        }
+    ]
+}
