@@ -6,5 +6,8 @@
             "binaryPath": "/workspaces/gradient/executable.out",
             "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "math.h": "c"
+    }
 }

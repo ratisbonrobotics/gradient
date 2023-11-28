@@ -1,7 +1,7 @@
 DUMMY := $(shell git submodule update --init --recursive)
 
 CC := gcc
-CFLAGS := -std=iso9899:1999 -g -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -fsanitize=address -fsanitize=undefined -Wl,-z,relro,-z,now -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
+CFLAGS := -std=iso9899:1999 -g -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -fsanitize=address -fsanitize=undefined -Wl,-z,relro,-z,now -lm -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
 REPO_NAME := $(shell basename `git rev-parse --show-toplevel`)
 SRC := $(shell find . -name "*.c")
 OBJS := $(SRC:.c=.o)
@@ -27,4 +27,4 @@ main.c:
 -include $(DEPS)
 
 clean:
-	rm -f $(OBJS) $(DEPS) $(TARGET) main.c main.o null.d
+	rm -f $(OBJS) $(DEPS) $(TARGET) main.c main.o null.d *.bmp
