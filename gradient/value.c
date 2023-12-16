@@ -7,17 +7,17 @@ struct value_
     double grad;
     value child_left;
     value child_right;
-    pass_function forward;  // sets data
-    pass_function backward; // set gradient for children
+    pass_function operation;
+    pass_function operation_derivative;
 };
 
-value Value(value child_left, value child_right, pass_function forward, pass_function backward)
+value Value(value child_left, value child_right, pass_function operation, pass_function operation_derivative)
 {
     value v = malloc(sizeof(struct value_));
     v->child_left = child_left;
     v->child_right = child_right;
-    v->forward = forward;
-    v->backward = backward;
+    v->operation = operation;
+    v->operation_derivative = operation_derivative;
     return v;
 }
 
@@ -53,10 +53,37 @@ double getGrad(value v)
 
 pass_function getForward(value v)
 {
-    return v->forward;
+    return v->operation;
 }
 
 pass_function getBackward(value v)
 {
-    return v->backward;
+    return v->operation_derivative;
+}
+
+void forward_value(value v)
+{
+    if (v->child_left != NULL)
+    {
+        forward_value(v->child_left);
+    }
+    if (v->child_right != NULL)
+    {
+        forward_value(v->child_right);
+    }
+    v->operation(v);
+}
+
+void backward_value(value v)
+{
+    if (v->child_left != NULL)
+    {
+        v->operation_derivative(getChildLeft(v));
+        backward_value(v->child_left);
+    }
+    if (v->child_right != NULL)
+    {
+        v->operation_derivative(getRightLeft(v));
+        backward_value(v->child_right);
+    }
 }

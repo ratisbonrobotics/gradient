@@ -2,7 +2,7 @@
 #define VALUE_H
 
 typedef struct value_ *value;
-typedef void (*pass_function)(value);
+typedef void (*pass_function)(double, double);
 
 value Value(value child_left, value child_right, pass_function forward, pass_function backward);
 value setData(value v, double data);

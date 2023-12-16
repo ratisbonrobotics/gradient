@@ -1,20 +1,11 @@
 #include <stdlib.h>
 #include "neuron.h"
 #include "value.h"
+#include "pass_function.h"
 
 void forward(neuron n)
 {
-    value y = n->y;
-    // go backwards through the graph until you are at the beginning and begin calling forward on those nodes
-    while (getChildLeft(y) != NULL)
-    {
-        y = getChildLeft(y);
-    }
-    while (y != NULL)
-    {
-        forward(y);
-        y = getChildRight(y);
-    }
+    forward_value(n->y);
 }
 
 void backward(neuron n)
