@@ -11,6 +11,11 @@
         "math.h": "c",
         "stdio.h": "c",
         "type_traits": "cpp",
-        "operation.h": "c"
-    }
+        "operation.h": "c",
+        "neuron.h": "c",
+        "stdlib.h": "c",
+        "value.h": "c"
+    },
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    "C_Cpp.clang_format_sortIncludes": true
 }

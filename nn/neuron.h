@@ -1,6 +1,7 @@
 #ifndef NEURON_H
 #define NEURON_H
 
+#include "operation.h"
 #include "value.h"
 
 typedef struct neuron_ *neuron;

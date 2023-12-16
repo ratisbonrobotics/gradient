@@ -1,8 +1,6 @@
-#include <stdlib.h>
 #include "neuron.h"
-#include "value.h"
-#include "operation.h"
 #include <assert.h>
+#include <stdlib.h>
 
 struct neuron_
 {

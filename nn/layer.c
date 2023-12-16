@@ -1,8 +1,6 @@
-#include "layer.h"
-#include "neuron.h"
-#include "operation.h"
 #include <stdlib.h>
 #include <assert.h>
+#include "layer.h"
 
 struct layer_
 {

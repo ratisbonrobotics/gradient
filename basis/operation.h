@@ -1,6 +1,8 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
+typedef double (*operation)(double, double);
+
 double op_none(double x, double _unused);
 double op_derivative_none(double _unused, double grad);
 double op_add(double d1, double d2);
