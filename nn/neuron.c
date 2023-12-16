@@ -6,7 +6,6 @@
 struct neuron_
 {
     unsigned int input_size;
-    value *x;
     value *w;
     value b;
 
@@ -16,18 +15,15 @@ struct neuron_
     value y;
 };
 
-neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation act, operation act_deriv, neuron child_left, neuron child_right)
+neuron Neuron(neuron *children, double *w, double b, unsigned int input_size, operation act, operation act_deriv)
 {
     neuron n = malloc(sizeof(struct neuron_));
     n->input_size = input_size;
-    n->x = malloc(sizeof(value) * input_size);
-    n->w = malloc(sizeof(value) * input_size);
 
     for (unsigned int i = 0; i < input_size; i++)
     {
-        n->x[i] = setData(Value(NULL, NULL, op_none, NULL), x[i]);
-        n->w[i] = setData(Value(NULL, NULL, op_none, NULL), w[i]);
-        n->xiwi[i] = Value(n->x[i], n->w[i], op_mult, op_derivative_mult);
+        n->w[i] = Value(NULL, NULL, op_none, op_derivative_none);
+        n->xiwi[i] = Value(getY(children[i]), n->w[i], op_mult, op_derivative_mult);
     }
 
     for (unsigned int i = 0; i < input_size; i++)
@@ -43,9 +39,16 @@ neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation
     return n;
 }
 
-void getY(neuron n)
+value getY(neuron n)
 {
-    return n->y;
+    if (n == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return n->y;
+    }
 }
 
 void forward(neuron n)

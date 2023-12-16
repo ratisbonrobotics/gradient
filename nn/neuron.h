@@ -5,6 +5,7 @@
 
 typedef struct neuron_ *neuron;
 
-neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation act, operation act_deriv);
+neuron Neuron(neuron *children, double *w, double b, unsigned int input_size, operation act, operation act_deriv);
+value getY(neuron n);
 
 #endif // NEURON_H
