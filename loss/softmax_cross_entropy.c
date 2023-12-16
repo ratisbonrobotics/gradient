@@ -1,7 +1,7 @@
-#include "m2err.h"
+#include "softmax_cross_entropy.h"
 #include "value.h"
 
-struct m2err_
+struct softmax_cross_entropy_
 {
     unsigned int size;
     value *errors;
