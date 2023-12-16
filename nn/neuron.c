@@ -15,7 +15,7 @@ struct neuron_
     value y;
 };
 
-neuron Neuron(neuron *children, double *w, double b, unsigned int input_size, operation act, operation act_deriv)
+neuron Neuron(neuron *children, unsigned int input_size, operation act, operation act_deriv)
 {
     neuron n = malloc(sizeof(struct neuron_));
     n->input_size = input_size;
@@ -31,7 +31,7 @@ neuron Neuron(neuron *children, double *w, double b, unsigned int input_size, op
         n->sigma_xiwi = Value(n->sigma_xiwi, n->xiwi[i], op_add, op_derivative_add);
     }
 
-    n->b = setData(Value(NULL, NULL, NULL, NULL), b);
+    n->b = Value(NULL, NULL, NULL, NULL);
     n->sigma_xiwi_bias = Value(n->sigma_xiwi, n->b, op_add, op_derivative_add);
 
     n->y = Value(n->sigma_xiwi_bias, NULL, act, act_deriv);
@@ -48,6 +48,42 @@ value getY(neuron n)
     else
     {
         return n->y;
+    }
+}
+
+value *getW(neuron n)
+{
+    if (n == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return n->w;
+    }
+}
+
+value getB(neuron n)
+{
+    if (n == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return n->b;
+    }
+}
+
+unsigned int getInputSize(neuron n)
+{
+    if (n == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        return n->input_size;
     }
 }
 
