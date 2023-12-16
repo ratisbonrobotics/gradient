@@ -100,16 +100,6 @@ unsigned int getInputSize(neuron n)
     }
 }
 
-void forward(neuron n)
-{
-    forward_value(n->y);
-}
-
-void backward(neuron n)
-{
-    backward_value(n->y);
-}
-
 void free_neuron(neuron n)
 {
     assert(n != NULL);
