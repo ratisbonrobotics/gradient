@@ -1,5 +1,6 @@
 #include "value.h"
 #include <stdlib.h>
+#include <assert.h>
 
 struct value_
 {
@@ -63,16 +64,21 @@ operation getBackward(value v)
 
 void forward_value(value v)
 {
+    double child_left_data = 0.0;
+    double child_right_data = 0.0;
+
     if (v->child_left != NULL)
     {
         forward_value(v->child_left);
+        child_left_data = v->child_left->data;
     }
     if (v->child_right != NULL)
     {
         forward_value(v->child_right);
+        child_right_data = v->child_right->data;
     }
 
-    setData(v, v->operation(v->child_left->data, v->child_right->data));
+    setData(v, v->operation(child_left_data, child_right_data));
 }
 
 void backward_value(value v)
@@ -87,4 +93,19 @@ void backward_value(value v)
         setGrad(v->child_right, v->operation_derivative(v->child_right->data, v->grad));
         backward_value(v->child_right);
     }
+}
+
+void free_value(value v)
+{
+    assert(v != NULL);
+    if (v->child_left != NULL)
+    {
+        free_value(v->child_left);
+    }
+    if (v->child_right != NULL)
+    {
+        free_value(v->child_right);
+    }
+
+    free(v);
 }
