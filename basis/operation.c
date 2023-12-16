@@ -39,6 +39,17 @@ double op_derivative_mult(double x, double grad)
     return x * grad;
 }
 
+double op_relu(double x, double _unused)
+{
+    (void)_unused;
+    return (x > 0) ? x : 0;
+}
+
+double op_derivative_relu(double x, double grad)
+{
+    return (x > 0) ? grad : 0;
+}
+
 double op_sigmoid(double x, double _unused)
 {
     (void)_unused;
