@@ -9,6 +9,7 @@
     ],
     "files.associations": {
         "math.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "type_traits": "cpp"
     }
 }
