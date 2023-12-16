@@ -11,5 +11,7 @@ value getChildLeft(value v);
 value getChildRight(value v);
 value setGrad(value v, double grad);
 double getGrad(value v);
+void forward_value(value v);
+void backward_value(value v);
 
 #endif // VALUE_H

@@ -3,16 +3,6 @@
 #include "value.h"
 #include "operation.h"
 
-void forward(neuron n)
-{
-    forward_value(n->y);
-}
-
-void backward(neuron n)
-{
-    backward_value(n->y);
-}
-
 struct neuron_
 {
     unsigned int input_size;
@@ -26,7 +16,7 @@ struct neuron_
     value y;
 };
 
-neuron Neuron(double *x, double *w, double b, unsigned int input_size, void (*act)(neuron), void (*deriv)(neuron))
+neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation act, operation act_deriv)
 {
     neuron n = malloc(sizeof(struct neuron_));
     n->input_size = input_size;
@@ -48,7 +38,17 @@ neuron Neuron(double *x, double *w, double b, unsigned int input_size, void (*ac
     n->b = setData(Value(NULL, NULL, NULL, NULL), b);
     n->sigma_xiwi_bias = Value(n->sigma_xiwi, n->b, op_add, op_derivative_add);
 
-    n->y = Value(n->sigma_xiwi_bias, NULL, act, deriv);
+    n->y = Value(n->sigma_xiwi_bias, NULL, act, act_deriv);
 
     return n;
+}
+
+void forward(neuron n)
+{
+    forward_value(n->y);
+}
+
+void backward(neuron n)
+{
+    backward_value(n->y);
 }
