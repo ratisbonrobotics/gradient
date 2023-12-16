@@ -34,6 +34,7 @@ value getChildRight(value v)
 value setData(value v, double data)
 {
     v->data = data;
+    return v;
 }
 
 double getData(value v)
@@ -44,6 +45,7 @@ double getData(value v)
 value setGrad(value v, double grad)
 {
     v->grad = grad;
+    return v;
 }
 
 double getGrad(value v)

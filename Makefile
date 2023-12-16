@@ -9,7 +9,7 @@ DEPS := $(OBJS:.o=.d)
 TARGET := executable.out
 
 # Base flags
-CFLAGS_BASE := -std=iso9899:1999 -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -Wl,-z,relro,-z,now -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
+CFLAGS_BASE := -std=iso9899:1999 -lm -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -Wl,-z,relro,-z,now -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
 
 # Debug settings
 CFLAGS_DEBUG := $(CFLAGS_BASE) -g -fsanitize=address -fsanitize=undefined
