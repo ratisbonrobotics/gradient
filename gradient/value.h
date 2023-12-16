@@ -2,9 +2,9 @@
 #define VALUE_H
 
 typedef struct value_ *value;
-typedef void (*pass_function)(double, double);
+typedef double (*operation)(double, double);
 
-value Value(value child_left, value child_right, pass_function forward, pass_function backward);
+value Value(value child_left, value child_right, operation forward, operation backward);
 value setData(value v, double data);
 double getData(value v);
 value getChildLeft(value v);

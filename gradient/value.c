@@ -7,17 +7,17 @@ struct value_
     double grad;
     value child_left;
     value child_right;
-    pass_function operation;
-    pass_function operation_derivative;
+    operation operation;
+    operation operation_derivative;
 };
 
-value Value(value child_left, value child_right, pass_function operation, pass_function operation_derivative)
+value Value(value child_left, value child_right, operation op, operation op_derivative)
 {
     value v = malloc(sizeof(struct value_));
     v->child_left = child_left;
     v->child_right = child_right;
-    v->operation = operation;
-    v->operation_derivative = operation_derivative;
+    v->operation = op;
+    v->operation_derivative = op_derivative;
     return v;
 }
 
@@ -51,12 +51,12 @@ double getGrad(value v)
     return v->grad;
 }
 
-pass_function getForward(value v)
+operation getForward(value v)
 {
     return v->operation;
 }
 
-pass_function getBackward(value v)
+operation getBackward(value v)
 {
     return v->operation_derivative;
 }
@@ -71,19 +71,20 @@ void forward_value(value v)
     {
         forward_value(v->child_right);
     }
-    v->operation(v);
+
+    setData(v, v->operation(v->child_left->data, v->child_right->data));
 }
 
 void backward_value(value v)
 {
     if (v->child_left != NULL)
     {
-        v->operation_derivative(getChildLeft(v));
+        setGrad(v->child_left, v->operation_derivative(v->child_left->data, v->grad));
         backward_value(v->child_left);
     }
     if (v->child_right != NULL)
     {
-        v->operation_derivative(getRightLeft(v));
+        setGrad(v->child_right, v->operation_derivative(v->child_right->data, v->grad));
         backward_value(v->child_right);
     }
 }

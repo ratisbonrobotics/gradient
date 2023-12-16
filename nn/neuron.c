@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "neuron.h"
 #include "value.h"
-#include "pass_function.h"
+#include "operation.h"
 
 void forward(neuron n)
 {
