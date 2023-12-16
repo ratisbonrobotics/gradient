@@ -16,7 +16,7 @@ struct neuron_
     value y;
 };
 
-neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation act, operation act_deriv)
+neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation act, operation act_deriv, neuron child_left, neuron child_right)
 {
     neuron n = malloc(sizeof(struct neuron_));
     n->input_size = input_size;
@@ -25,8 +25,8 @@ neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation
 
     for (unsigned int i = 0; i < input_size; i++)
     {
-        n->x[i] = setData(Value(NULL, NULL, NULL, NULL), x[i]);
-        n->w[i] = setData(Value(NULL, NULL, NULL, NULL), w[i]);
+        n->x[i] = setData(Value(NULL, NULL, op_none, NULL), x[i]);
+        n->w[i] = setData(Value(NULL, NULL, op_none, NULL), w[i]);
         n->xiwi[i] = Value(n->x[i], n->w[i], op_mult, op_derivative_mult);
     }
 
@@ -41,6 +41,11 @@ neuron Neuron(double *x, double *w, double b, unsigned int input_size, operation
     n->y = Value(n->sigma_xiwi_bias, NULL, act, act_deriv);
 
     return n;
+}
+
+void getY(neuron n)
+{
+    return n->y;
 }
 
 void forward(neuron n)

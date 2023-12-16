@@ -6,6 +6,18 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+double op_none(double x, double _unused)
+{
+    (void)_unused;
+    return x;
+}
+
+double op_derivative_none(double _unused, double grad)
+{
+    (void)_unused;
+    return 0;
+}
+
 double op_add(double d1, double d2)
 {
     return d1 + d2;
