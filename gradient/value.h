@@ -3,11 +3,11 @@
 
 typedef struct value_ *value;
 value Value(value child_left, value child_right, void (*forward)(value), void (*backward)(value));
-void setData(value v, double data);
+value setData(value v, double data);
 double getData(value v);
 value getChildLeft(value v);
 value getChildRight(value v);
-void setGrad(value v, double grad);
+value setGrad(value v, double grad);
 double getGrad(value v);
 
 void forward_empty(value v);

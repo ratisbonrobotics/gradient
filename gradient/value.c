@@ -36,7 +36,7 @@ value getChildRight(value v)
     return v->child_right;
 }
 
-void setData(value v, double data)
+value setData(value v, double data)
 {
     v->data = data;
 }
@@ -46,7 +46,7 @@ double getData(value v)
     return v->data;
 }
 
-void setGrad(value v, double grad)
+value setGrad(value v, double grad)
 {
     v->grad = grad;
 }
