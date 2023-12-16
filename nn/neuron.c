@@ -10,6 +10,7 @@ void forward(neuron n)
 
 void backward(neuron n)
 {
+    backward_value(n->y);
 }
 
 struct neuron_
@@ -34,18 +35,18 @@ neuron Neuron(double *x, double *w, double b, unsigned int input_size, void (*ac
 
     for (unsigned int i = 0; i < input_size; i++)
     {
-        n->x[i] = setData(Value(NULL, NULL, forward_empty, backward_empty), x[i]);
-        n->w[i] = setData(Value(NULL, NULL, forward_empty, backward_empty), w[i]);
-        n->xiwi[i] = Value(n->x[i], n->w[i], forward_mult, backward_mult);
+        n->x[i] = setData(Value(NULL, NULL, NULL, NULL), x[i]);
+        n->w[i] = setData(Value(NULL, NULL, NULL, NULL), w[i]);
+        n->xiwi[i] = Value(n->x[i], n->w[i], op_mult, op_derivative_mult);
     }
 
     for (unsigned int i = 0; i < input_size; i++)
     {
-        n->sigma_xiwi = Value(n->sigma_xiwi, n->xiwi[i], forward_add, backward_add);
+        n->sigma_xiwi = Value(n->sigma_xiwi, n->xiwi[i], op_add, op_derivative_add);
     }
 
-    n->b = setData(Value(NULL, NULL, forward_empty, backward_empty), b);
-    n->sigma_xiwi_bias = Value(n->sigma_xiwi, n->b, forward_add, backward_add);
+    n->b = setData(Value(NULL, NULL, NULL, NULL), b);
+    n->sigma_xiwi_bias = Value(n->sigma_xiwi, n->b, op_add, op_derivative_add);
 
     n->y = Value(n->sigma_xiwi_bias, NULL, act, deriv);
 
