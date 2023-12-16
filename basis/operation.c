@@ -15,6 +15,7 @@ double op_none(double x, double _unused)
 double op_derivative_none(double _unused, double grad)
 {
     (void)_unused;
+    (void)grad;
     return 0;
 }
 
