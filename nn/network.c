@@ -23,7 +23,7 @@ network Network(unsigned int network_size, unsigned int *layer_sizes, operation 
     return net;
 }
 
-neuron *getOutputs(network net)
+layer *getOutputs(network net)
 {
-    return getNeurons(net->layers[net->size - 1]);
+    return net->layers;
 }

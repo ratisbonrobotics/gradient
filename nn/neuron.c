@@ -1,6 +1,7 @@
 #include "neuron.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct neuron_
 {
@@ -12,6 +13,8 @@ struct neuron_
 
 neuron Neuron(neuron *children, unsigned int input_size, operation act, operation act_deriv)
 {
+    srand((unsigned)time(NULL));
+
     neuron n = malloc(sizeof(struct neuron_));
 
     if (children == NULL)
@@ -32,6 +35,9 @@ neuron Neuron(neuron *children, unsigned int input_size, operation act, operatio
         for (unsigned int i = 0; i < input_size; i++)
         {
             n->w[i] = Value(NULL, NULL, op_linear, op_derivative_linear);
+            double r = (double)rand() / (double)((unsigned)RAND_MAX / 2) - 1.0;
+            setData(n->w[i], r);
+
             value xiwi = Value(getY(children[i]), n->w[i], op_mult, op_derivative_mult);
             if (sigma_xiwi == NULL)
             {
