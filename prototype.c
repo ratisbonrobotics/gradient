@@ -17,13 +17,13 @@ int main_gradient(void)
     mean_squared_error mse = MSE(1, (value[]){output}, (value[]){target});
 
     /* Train model */
-    for (unsigned int i = 0; i < 100; i++)
+    double average_mse = 0.0;
+    for (unsigned int i = 0; i < 10; i++)
     {
         for (unsigned int j = 0; j < 4; j++)
         {
             for (unsigned int k = 0; k < 100; k++)
             {
-
                 for (unsigned int l = 0; l < 12; l++)
                 {
                     setData(getY(inputs[l]), X_train[j * 100 + k][l]);
@@ -37,20 +37,23 @@ int main_gradient(void)
             update_value(output, 0.01);
             printf("Batch %d\n", j);
         }
-        printf("Epoch %d\n", i);
-    }
 
-    /* Test model */
-    for (unsigned int i = 0; i < 100; i++)
-    {
-        for (unsigned int j = 0; j < 12; j++)
+        /* Test model */
+        for (unsigned int j = 0; j < 100; j++)
         {
-            setData(getY(inputs[j]), X_test[i][j]);
-        }
-        setData(target, Y_test[i]);
+            for (unsigned int k = 0; k < 12; k++)
+            {
+                setData(getY(inputs[k]), X_test[j][k]);
+            }
+            setData(target, Y_test[j]);
 
-        forward_value(mse);
-        printf("Sample %d\n", i);
+            forward_value(mse);
+            average_mse += getData(mse);
+            printf("Sample %d: Error: %f\n", j, getData(mse));
+        }
+
+        printf("Training Epoch %d: Average MSE on test set: %f \n", i, average_mse / 100.0);
+        average_mse = 0.0;
     }
 
     return 0;
