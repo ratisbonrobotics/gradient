@@ -16,6 +16,17 @@ double op_derivative_add(double _unused, double grad)
     return grad;
 }
 
+double op_sub(double d1, double d2)
+{
+    return d1 - d2;
+}
+
+double op_derivative_sub(double _unused, double grad)
+{
+    (void)_unused;
+    return grad;
+}
+
 double op_mult(double d1, double d2)
 {
     return d1 * d2;

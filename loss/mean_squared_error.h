@@ -3,8 +3,8 @@
 
 #include "value.h"
 
-typedef struct mean_squared_error_ *mean_squared_error;
+typedef value mean_squared_error;
 
-mean_squared_error MSE(unsigned int size, value *targets, value *outputs);
+mean_squared_error MSE(unsigned int size, value *outputs, value *targets);
 
 #endif // MEAN_SQUARED_ERROR_H
