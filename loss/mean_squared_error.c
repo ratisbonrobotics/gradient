@@ -1,8 +1,10 @@
 #include "mean_squared_error.h"
-#include "value.h"
 
-struct m2err_
+struct mean_squared_error_
 {
-    value *targets;
-    value *outputs;
+    unsigned int size;
+    value *target;
+    value *output;
 };
+
+mean_squared_error MSE(unsigned int size, value *targets, value *outputs) {}
