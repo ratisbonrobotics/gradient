@@ -55,6 +55,7 @@ int main_gradient(void)
         average_mse = 0.0;
     }
 
+    freeMSE(mse);
     freeNetwork(boston_housing_regression);
 
     return 0;

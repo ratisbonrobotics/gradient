@@ -62,6 +62,11 @@ operation getBackward(value v)
     return v->operation_derivative;
 }
 
+operation getOperation(value v)
+{
+    return v->operation;
+}
+
 void forwardValue(value v)
 {
     double child_left_data = 0.0;

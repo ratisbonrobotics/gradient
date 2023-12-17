@@ -10,6 +10,7 @@ void setData(value v, double data);
 double getData(value v);
 value getChildLeft(value v);
 value getChildRight(value v);
+operation getOperation(value v);
 void setGrad(value v, double grad);
 double getGrad(value v);
 void forwardValue(value v);
