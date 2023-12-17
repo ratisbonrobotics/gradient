@@ -12,9 +12,9 @@ value getChildLeft(value v);
 value getChildRight(value v);
 void setGrad(value v, double grad);
 double getGrad(value v);
-void forward_value(value v);
-void backward_value(value v);
-void update_value(value v, double learning_rate);
-void free_value(value v);
+void forwardValue(value v);
+void backwardValue(value v);
+void updateValue(value v, double learning_rate);
+void freeValue(value v);
 
 #endif // VALUE_H

@@ -31,10 +31,10 @@ int main_gradient(void)
 
                 setData(target, Y_train[j * 100 + k]);
 
-                forward_value(mse);
-                backward_value(output);
+                forwardValue(mse);
+                backwardValue(output);
             }
-            update_value(output, 0.01);
+            updateValue(output, 0.01);
             printf("Batch %d\n", j);
         }
 
@@ -47,14 +47,15 @@ int main_gradient(void)
             }
             setData(target, Y_test[j]);
 
-            forward_value(mse);
+            forwardValue(mse);
             average_mse += getData(mse);
-            printf("Sample %d: Error: %f\n", j, getData(mse));
         }
 
-        printf("Training Epoch %d: Average MSE on test set: %f \n", i, average_mse / 100.0);
+        printf("Training Epoch %d finished | Average MSE on test set: %f \n", i, average_mse / 100.0);
         average_mse = 0.0;
     }
+
+    freeNetwork(boston_housing_regression);
 
     return 0;
 }

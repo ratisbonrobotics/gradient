@@ -49,7 +49,7 @@ neuron Neuron(neuron *children, unsigned int input_size, operation act, operatio
             }
         }
 
-        n->b = Value(NULL, NULL, NULL, NULL);
+        n->b = Value(NULL, NULL, op_linear, op_derivative_linear);
         value sigma_xiwi_bias = Value(sigma_xiwi, n->b, op_add, op_derivative_add);
 
         n->y = Value(sigma_xiwi_bias, NULL, act, act_deriv);
@@ -106,13 +106,23 @@ unsigned int getInputSize(neuron n)
     }
 }
 
-void free_neuron(neuron n)
+void freeNeuron(neuron n)
 {
     assert(n != NULL);
-    free_value(n->y);
+    freeValue(n->y);
     if (n->w != NULL)
     {
+        for (unsigned int i = 0; i < n->input_size; i++)
+        {
+            freeValue(n->w[i]);
+        }
+
         free(n->w);
     }
+    if (n->b != NULL)
+    {
+        freeValue(n->b);
+    }
+
     free(n);
 }
