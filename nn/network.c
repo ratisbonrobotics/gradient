@@ -23,7 +23,7 @@ network Network(unsigned int network_size, unsigned int *layer_sizes, operation 
     return net;
 }
 
-layer *getOutputs(network net)
+layer *getLayers(network net)
 {
     return net->layers;
 }

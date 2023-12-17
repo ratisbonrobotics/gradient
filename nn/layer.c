@@ -8,7 +8,7 @@ struct layer_
     neuron *neurons;
 };
 
-layer Layer(layer previous_layer, int size, int prev_size, operation act, operation act_deriv)
+layer Layer(layer previous_layer, unsigned int size, unsigned int prev_size, operation act, operation act_deriv)
 {
     layer l = (layer)malloc(sizeof(struct layer_));
     l->size = size;
