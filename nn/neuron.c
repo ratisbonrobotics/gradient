@@ -20,7 +20,7 @@ neuron Neuron(neuron *children, unsigned int input_size, operation act, operatio
         n->input_size = 0;
         n->w = NULL;
         n->b = NULL;
-        n->y = Value(NULL, NULL, op_none, op_derivative_none);
+        n->y = Value(NULL, NULL, op_linear, op_derivative_linear);
     }
     else
     {
@@ -31,7 +31,7 @@ neuron Neuron(neuron *children, unsigned int input_size, operation act, operatio
 
         for (unsigned int i = 0; i < input_size; i++)
         {
-            n->w[i] = Value(NULL, NULL, op_none, op_derivative_none);
+            n->w[i] = Value(NULL, NULL, op_linear, op_derivative_linear);
             value xiwi = Value(getY(children[i]), n->w[i], op_mult, op_derivative_mult);
             if (sigma_xiwi == NULL)
             {

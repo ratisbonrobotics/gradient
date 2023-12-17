@@ -3,6 +3,6 @@
 
 struct m2err_
 {
-    unsigned int size;
-    value *errors;
+    value *targets;
+    value *outputs;
 };

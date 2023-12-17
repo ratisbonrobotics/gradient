@@ -19,7 +19,7 @@ layer Layer(layer previous_layer, int size, int prev_size, operation act, operat
         /* input layer */
         for (unsigned int i = 0; i < size; i++)
         {
-            l->neurons[i] = Neuron(NULL, 0, op_none, op_derivative_none);
+            l->neurons[i] = Neuron(NULL, 0, op_linear, op_derivative_linear);
         }
     }
     else

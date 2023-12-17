@@ -5,6 +5,7 @@
 int main_gradient(void)
 {
 
-    network n = Network(3, (unsigned int[]){4, 3, 1}, (operation[]){op_sigmoid, op_sigmoid, op_sigmoid}, (operation[]){op_derivative_sigmoid, op_derivative_sigmoid, op_derivative_sigmoid});
+    network boston_housing_regression = Network(3, (unsigned int[]){12, 5, 1}, (operation[]){op_relu, op_relu, op_linear}, (operation[]){op_derivative_relu, op_derivative_relu, op_derivative_linear});
+
     return 0;
 }

@@ -5,19 +5,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-double op_none(double x, double _unused)
-{
-    (void)_unused;
-    return x;
-}
-
-double op_derivative_none(double _unused, double grad)
-{
-    (void)_unused;
-    (void)grad;
-    return 0;
-}
-
 double op_add(double d1, double d2)
 {
     return d1 + d2;
@@ -37,6 +24,19 @@ double op_mult(double d1, double d2)
 double op_derivative_mult(double x, double grad)
 {
     return x * grad;
+}
+
+double op_linear(double x, double _unused)
+{
+    (void)_unused;
+    return x;
+}
+
+double op_derivative_linear(double _unused1, double _unused2)
+{
+    (void)_unused1;
+    (void)_unused2;
+    return 0;
 }
 
 double op_relu(double x, double _unused)
