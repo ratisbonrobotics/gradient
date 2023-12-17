@@ -7,7 +7,6 @@
 
 int main_gradient(void)
 {
-
     network boston_housing_regression = Network(3, (unsigned int[]){12, 5, 1}, (operation[]){op_relu, op_relu, op_linear}, (operation[]){op_derivative_relu, op_derivative_relu, op_derivative_linear});
 
     value target = Value(NULL, NULL, op_linear, op_derivative_linear);
@@ -18,7 +17,7 @@ int main_gradient(void)
     {
         forward_value(mse);
         backward_value(output);
-        // update_value(mse, 0.01);
+        update_value(output, 0.01);
     }
 
     return 0;

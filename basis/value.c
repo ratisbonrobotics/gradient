@@ -1,6 +1,6 @@
 #include "value.h"
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 struct value_
 {
@@ -85,14 +85,28 @@ void backward_value(value v)
 {
     if (v->child_left != NULL)
     {
-        setGrad(v->child_left, v->operation_derivative(v->child_left->data, v->grad));
+        setGrad(v->child_left, v->child_left->grad + v->operation_derivative(v->child_left->data, v->grad));
         backward_value(v->child_left);
     }
     if (v->child_right != NULL)
     {
-        setGrad(v->child_right, v->operation_derivative(v->child_right->data, v->grad));
+        setGrad(v->child_right, v->child_right->grad + v->operation_derivative(v->child_right->data, v->grad));
         backward_value(v->child_right);
     }
+}
+
+void update_value(value v, double learning_rate)
+{
+    if (v->child_left != NULL)
+    {
+        update_value(v->child_left, learning_rate);
+    }
+    if (v->child_right != NULL)
+    {
+        update_value(v->child_right, learning_rate);
+    }
+    setData(v, v->data - learning_rate * v->grad);
+    setGrad(v, 0.0);
 }
 
 void free_value(value v)

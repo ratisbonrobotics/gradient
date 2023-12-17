@@ -14,6 +14,7 @@ void setGrad(value v, double grad);
 double getGrad(value v);
 void forward_value(value v);
 void backward_value(value v);
+void update_value(value v, double learning_rate);
 void free_value(value v);
 
 #endif // VALUE_H
