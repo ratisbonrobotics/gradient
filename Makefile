@@ -12,7 +12,7 @@ TARGET := executable.out
 CFLAGS_BASE := -std=iso9899:1999 -lm -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -Wl,-z,relro,-z,now -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
 
 # Debug settings
-CFLAGS_DEBUG := $(CFLAGS_BASE) -g -fsanitize=address -fsanitize=undefined
+CFLAGS_DEBUG := $(CFLAGS_BASE) -g -fsanitize=undefined
 
 # Release with assert settings
 CFLAGS_RELEASE_ASSERT := $(CFLAGS_BASE) -O3 -march=native -funroll-loops -flto

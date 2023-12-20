@@ -27,13 +27,3 @@ layer *getLayers(network net)
 {
     return net->layers;
 }
-
-void freeNetwork(network net)
-{
-    for (unsigned int i = 0; i < net->size; i++)
-    {
-        freeLayer(net->layers[i]);
-    }
-    free(net->layers);
-    free(net);
-}

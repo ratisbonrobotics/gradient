@@ -105,24 +105,3 @@ unsigned int getInputSize(neuron n)
         return n->input_size;
     }
 }
-
-void freeNeuron(neuron n)
-{
-    assert(n != NULL);
-    freeValue(n->y);
-    if (n->w != NULL)
-    {
-        for (unsigned int i = 0; i < n->input_size; i++)
-        {
-            freeValue(n->w[i]);
-        }
-
-        free(n->w);
-    }
-    if (n->b != NULL)
-    {
-        freeValue(n->b);
-    }
-
-    free(n);
-}

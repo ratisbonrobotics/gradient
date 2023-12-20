@@ -44,14 +44,3 @@ neuron *getNeurons(layer l)
     assert(l != NULL);
     return l->neurons;
 }
-
-void freeLayer(layer l)
-{
-    assert(l != NULL);
-    for (unsigned int i = 0; i < l->size; i++)
-    {
-        freeNeuron(l->neurons[i]);
-    }
-    free(l->neurons);
-    free(l);
-}

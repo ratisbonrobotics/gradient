@@ -26,28 +26,3 @@ mean_squared_error MSE(unsigned int size, value *outputs, value *targets)
 
     return Value(y_i_hat_minus_y_i_squared_sigma, normalisation, op_mult, op_derivative_mult);
 }
-
-static void freeMSE_recursion(value val)
-{
-    if (getOperation(val) == op_mult)
-    {
-        freeValue(getChildRight(val));
-        freeValue(getChildLeft(val));
-    }
-    else if (getOperation(val) == op_add)
-    {
-        freeValue(getChildLeft(getChildRight(val)));
-        freeValue(getChildRight(getChildRight(val)));
-        freeValue(getChildRight(val));
-        freeMSE_recursion(getChildLeft(val));
-        freeValue(getChildLeft(val));
-    }
-}
-
-void freeMSE(mean_squared_error mse)
-{
-    freeValue(getChildRight(mse)); // normalisation
-    freeMSE_recursion(getChildLeft(mse));
-
-    freeValue(mse);
-}
