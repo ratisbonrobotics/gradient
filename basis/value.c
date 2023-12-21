@@ -114,22 +114,62 @@ void updateValue(value v, double learning_rate)
     setGrad(v, 0.0);
 }
 
-static void draw_recursive(value v, Agraph_t *g)
+static void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
 {
-    Agnode_t *n = agnode(g, "n", 1);
-    agsafeset(n, "shape", "record", "");
-    agsafeset(n, "label", "{x2 | data 0.0000 | grad 0.0000}", "");
+    if (v->child_left == NULL && v->child_right == NULL && v->operation == NULL)
+    {
+        return;
+    }
 
-    Agnode_t *op = agnode(g, "n", 1);
+    Agnode_t *op = agnode(g, "op", 1);
     agsafeset(op, "label", getSymbol(v->operation), "");
+    Agedge_t *e = agedge(g, op, parent, 0, 1);
+
+    if (v->child_left != NULL)
+    {
+        Agnode_t *child_left = agnode(g, "child_left", 1);
+        agsafeset(child_left, "shape", "record", "");
+        char label[128];
+        snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->child_left->data, v->child_left->grad);
+        agsafeset(child_left, "label", label, "");
+
+        Agedge_t *e1 = agedge(g, child_left, op, 0, 1);
+        draw_recursive(v->child_left, g, child_left);
+    }
+
+    if (v->child_right != NULL)
+    {
+        Agnode_t *child_right = agnode(g, "child_right", 1);
+        agsafeset(child_right, "shape", "record", "");
+        char label[128];
+        snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->child_right->data, v->child_right->grad);
+        agsafeset(child_right, "label", label, "");
+
+        Agedge_t *e1 = agedge(g, child_right, op, 0, 1);
+        draw_recursive(v->child_right, g, child_right);
+    }
 }
 
 void draw(value v)
 {
-    // Create a new graph
     Agraph_t *g = agopen("g", Agdirected, NULL);
     agsafeset(g, "rankdir", "LR", "");
     GVC_t *gvc = gvContext();
+
+    Agnode_t *value_node = agnode(g, "n", 1);
+    agsafeset(value_node, "shape", "record", "");
+    char label[128];
+    snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->data, v->grad);
+    agsafeset(value_node, "label", label, "");
+
+    draw_recursive(g, v, value_node);
+
+    gvLayout(gvc, g, "dot");
+    gvRenderFilename(gvc, g, "svg", "graph.svg");
+
+    gvFreeLayout(gvc, g);
+    gvFreeContext(gvc);
+    agclose(g);
 }
 
 void freeValue(value v)
