@@ -16,7 +16,7 @@ double getGrad(value v);
 void forward(value v);
 void backward(value v);
 void update(value v, double learning_rate);
-void draw(value v);
+void draw(value v, char *filename);
 void freeValue(value v);
 
 #endif // VALUE_H

@@ -6,29 +6,35 @@
 int main_gradient(void)
 {
     value v1 = Value(NULL, NULL, NULL);
-    value v2 = Value(NULL, NULL, NULL);
-    value v3 = Value(v1, v2, &mult);
-    setGrad(v3, 1.0);
-
     setData(v1, 3.0);
+    value v2 = Value(NULL, NULL, NULL);
     setData(v2, 2.0);
+    value output = Value(v1, v2, &mult);
+    value target = Value(NULL, NULL, NULL);
+    setData(target, 10.0);
+    value error = Value(output, target, &sub);
+    setGrad(error, 1.0);
 
-    forward(v3);
-    backward(v3);
+    forward(error);
+    draw(error, "first");
+    backward(error);
+    update(output, 0.01);
 
-    printf("v1: %f\n", getData(v1));
-    printf("v2: %f\n", getData(v2));
-    printf("v3: %f\n", getData(v3));
+    forward(error);
+    draw(error, "second");
+    backward(error);
+    update(output, 0.01);
 
-    printf("v1: %f\n", getGrad(v1));
-    printf("v2: %f\n", getGrad(v2));
-    printf("v3: %f\n", getGrad(v3));
+    forward(error);
+    draw(error, "third");
+    backward(error);
+    update(output, 0.01);
 
-    draw(v3);
-
-    freeValue(v3);
+    freeValue(output);
     freeValue(v2);
     freeValue(v1);
+    freeValue(target);
+    freeValue(error);
 
     return 0;
 }

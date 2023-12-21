@@ -133,20 +133,26 @@ void update(value v, double learning_rate)
     setGrad(v, 0.0);
 }
 
-static void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
+void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
 {
     if (v->operation == NULL)
     {
         return;
     }
 
-    Agnode_t *op = agnode(g, "op", 1);
+    char op_name[128];
+    snprintf(op_name, sizeof(op_name), "op_%p", (void *)v);
+
+    Agnode_t *op = agnode(g, op_name, 1);
     agsafeset(op, "label", getSymbol(v->operation), "");
     agedge(g, op, parent, 0, 1);
 
     if (v->child_left != NULL)
     {
-        Agnode_t *child_left = agnode(g, "child_left", 1);
+        char child_left_name[128];
+        snprintf(child_left_name, sizeof(child_left_name), "child_left_%p", (void *)v->child_left);
+
+        Agnode_t *child_left = agnode(g, child_left_name, 1);
         agsafeset(child_left, "shape", "record", "");
         char label[128];
         snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->child_left->data, v->child_left->grad);
@@ -158,7 +164,10 @@ static void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
 
     if (v->child_right != NULL)
     {
-        Agnode_t *child_right = agnode(g, "child_right", 1);
+        char child_right_name[128];
+        snprintf(child_right_name, sizeof(child_right_name), "child_right_%p", (void *)v->child_right);
+
+        Agnode_t *child_right = agnode(g, child_right_name, 1);
         agsafeset(child_right, "shape", "record", "");
         char label[128];
         snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->child_right->data, v->child_right->grad);
@@ -169,7 +178,7 @@ static void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
     }
 }
 
-void draw(value v)
+void draw(value v, char *filename)
 {
     Agraph_t *g = agopen("g", Agdirected, NULL);
     agsafeset(g, "rankdir", "LR", "");
@@ -184,7 +193,9 @@ void draw(value v)
 
     GVC_t *gvc = gvContext();
     gvLayout(gvc, g, "dot");
-    gvRenderFilename(gvc, g, "svg", "graph.svg");
+    char fname[128];
+    snprintf(fname, sizeof(fname), "%s.svg", filename);
+    gvRenderFilename(gvc, g, "svg", fname);
 
     gvFreeLayout(gvc, g);
     gvFreeContext(gvc);
