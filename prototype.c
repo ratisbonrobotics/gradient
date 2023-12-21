@@ -6,26 +6,47 @@
 int main_gradient(void)
 {
     Agraph_t *g;
-    Agnode_t *n, *m;
-    Agedge_t *e;
+    Agnode_t *n, *m, *o, *p;
+    Agedge_t *e, *e2, *e3;
     GVC_t *gvc;
 
     // Create a new graph
     g = agopen("g", Agdirected, NULL);
+    agsafeset(g, "rankdir", "LR", "");
 
-    // Add nodes and an edge
+    // Create nodes with record shapes
     n = agnode(g, "n", 1);
     m = agnode(g, "m", 1);
-    e = agedge(g, n, m, NULL, 1);
+    o = agnode(g, "o", 1);
+    p = agnode(g, "p", 1);
 
-    // Set some attributes using agsafeset
-    agsafeset(n, "color", "red", "");
-    agsafeset(e, "label", "Edge from n to m", "");
+    // Set the record label for each node
+    agsafeset(n, "shape", "record", "");
+    agsafeset(n, "label", "{x2 | data 0.0000 | grad 0.0000}", "");
+
+    agsafeset(m, "shape", "record", "");
+    agsafeset(m, "label", "{w2 | data 1.0000 | grad 0.0000}", "");
+
+    agsafeset(o, "shape", "record", "");
+    agsafeset(o, "label", "{<f0> x2*w2 | data 0.0000 | grad 0.5000}", "");
+
+    agsafeset(p, "shape", "record", "");
+    agsafeset(p, "label", "{<f0> x1*w1 | data -6.0000 | grad 0.5000}", "");
+
+    // Create edges between the nodes
+    e = agedge(g, n, o, 0, 1);
+    e2 = agedge(g, m, o, 0, 1);
+    e3 = agedge(g, o, p, 0, 1);
+
+    // Set labels for edges
+    agsafeset(e, "label", "*", "");
+    agsafeset(e2, "label", "*", "");
+    agsafeset(e3, "label", "+", "");
 
     // Create a Graphviz context
     gvc = gvContext();
 
-    // Set the layout engine (e.g., dot, neato)
+    // Set the layout engine
     gvLayout(gvc, g, "dot");
 
     // Render the graph to SVG
@@ -34,8 +55,10 @@ int main_gradient(void)
     // Free layout resources
     gvFreeLayout(gvc, g);
 
-    // Free other resources
+    // Free Graphviz context
     gvFreeContext(gvc);
+
+    // Close the graph
     agclose(g);
 
     return 0;

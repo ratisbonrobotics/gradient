@@ -5,7 +5,7 @@
 
 typedef struct value_ *value;
 
-value Value(value child_left, value child_right, operation forward, operation backward);
+value Value(value child_left, value child_right, operation forward);
 void setData(value v, double data);
 double getData(value v);
 value getChildLeft(value v);

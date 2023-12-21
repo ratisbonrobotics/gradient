@@ -1,5 +1,7 @@
 #include "value.h"
 #include <assert.h>
+#include <graphviz/cgraph.h>
+#include <graphviz/gvc.h>
 #include <stdlib.h>
 
 struct value_
@@ -9,10 +11,9 @@ struct value_
     value child_left;
     value child_right;
     operation operation;
-    operation operation_derivative;
 };
 
-value Value(value child_left, value child_right, operation op, operation op_derivative)
+value Value(value child_left, value child_right, operation op)
 {
     value v = malloc(sizeof(struct value_));
     v->data = 0.0;
@@ -20,7 +21,6 @@ value Value(value child_left, value child_right, operation op, operation op_deri
     v->child_left = child_left;
     v->child_right = child_right;
     v->operation = op;
-    v->operation_derivative = op_derivative;
     return v;
 }
 
@@ -54,16 +54,6 @@ double getGrad(value v)
     return v->grad;
 }
 
-operation getForward(value v)
-{
-    return v->operation;
-}
-
-operation getBackward(value v)
-{
-    return v->operation_derivative;
-}
-
 operation getOperation(value v)
 {
     return v->operation;
@@ -90,19 +80,19 @@ void forwardValue(value v)
         child_right_data = v->child_right->data;
     }
 
-    setData(v, v->operation(child_left_data, child_right_data));
+    setData(v, getForward(v->operation)(child_left_data, child_right_data));
 }
 
 void backwardValue(value v)
 {
     if (v->child_left != NULL)
     {
-        setGrad(v->child_left, v->child_left->grad + v->operation_derivative(v->child_left->data, v->grad));
+        setGrad(v->child_left, v->child_left->grad + getBackward(v->operation)(v->child_left->data, v->grad));
         backwardValue(v->child_left);
     }
     if (v->child_right != NULL)
     {
-        setGrad(v->child_right, v->child_right->grad + v->operation_derivative(v->child_right->data, v->grad));
+        setGrad(v->child_right, v->child_right->grad + getBackward(v->operation)(v->child_right->data, v->grad));
         backwardValue(v->child_right);
     }
 }
@@ -122,6 +112,24 @@ void updateValue(value v, double learning_rate)
         updateValue(v->child_right, learning_rate);
     }
     setGrad(v, 0.0);
+}
+
+static void draw_recursive(value v, Agraph_t *g)
+{
+    Agnode_t *n = agnode(g, "n", 1);
+    agsafeset(n, "shape", "record", "");
+    agsafeset(n, "label", "{x2 | data 0.0000 | grad 0.0000}", "");
+
+    Agnode_t *op = agnode(g, "n", 1);
+    agsafeset(op, "label", getSymbol(v->operation), "");
+}
+
+void draw(value v)
+{
+    // Create a new graph
+    Agraph_t *g = agopen("g", Agdirected, NULL);
+    agsafeset(g, "rankdir", "LR", "");
+    GVC_t *gvc = gvContext();
 }
 
 void freeValue(value v)

@@ -1,23 +1,20 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
-typedef double (*operation)(double, double);
+typedef struct operation_ *operation;
+typedef double (*operation_function)(double, double);
 
-double op_linear(double x, double _unused);
-double op_derivative_linear(double _unused1, double _unused2);
-double op_add(double d1, double d2);
-double op_derivative_add(double x, double grad);
-double op_sub(double d1, double d2);
-double op_derivative_sub(double x, double grad);
-double op_mult(double d1, double d2);
-double op_derivative_mult(double x, double grad);
-double op_relu(double x, double _unused);
-double op_derivative_relu(double x, double grad);
-double op_sigmoid(double x, double _unused);
-double op_derivative_sigmoid(double x, double grad);
-double op_tanh(double x, double _unused);
-double op_derivative_tanh(double x, double grad);
-double op_gelu(double x, double _unused);
-double op_derivative_gelu(double x, double grad);
+extern struct operation_ linear;
+extern struct operation_ add;
+extern struct operation_ sub;
+extern struct operation_ mult;
+extern struct operation_ relu;
+extern struct operation_ sigmoid;
+extern struct operation_ tangent;
+extern struct operation_ gelu;
+
+operation_function getForward(operation op);
+operation_function getBackward(operation op);
+char *getSymbol(operation op);
 
 #endif // OPERATION_H
