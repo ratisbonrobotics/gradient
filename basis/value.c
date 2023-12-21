@@ -99,6 +99,7 @@ void backward(value v)
 
         backward(v->child_left);
     }
+
     if (v->child_right != NULL)
     {
         double child_left_data = 0.0;
@@ -107,7 +108,7 @@ void backward(value v)
             child_left_data = v->child_left->data;
         }
 
-        double child_right_new_grad = getBackward(v->operation)(child_left_data, v->child_right->data);
+        double child_right_new_grad = getBackward(v->operation)(v->child_right->data, child_left_data);
         child_right_new_grad *= v->grad;
         setGrad(v->child_right, v->child_right->grad + child_right_new_grad);
 

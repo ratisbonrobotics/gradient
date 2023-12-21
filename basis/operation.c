@@ -48,17 +48,17 @@ static inline double op_linear(double x, double _unused)
     return x;
 }
 
-static inline double op_derivative_linear(double _unused1, double _unused2)
+static inline double op_derivative_linear(double x, double _unused)
 {
-    (void)_unused1;
-    (void)_unused2;
-    return 0;
+    (void)x;
+    (void)_unused;
+    return 1.0;
 }
 
 static inline double op_relu(double x, double _unused)
 {
     (void)_unused;
-    return (x > 0) ? x : 0;
+    return (x > 0.0) ? x : 0.0;
 }
 
 static inline double op_derivative_relu(double x, double _unused)
