@@ -1,59 +1,42 @@
-#include "boston_housing_dataset.h"
-#include "mean_squared_error.h"
-#include "network.h"
-#include "neuron.h"
 #include "operation.h"
+#include <graphviz/cgraph.h>
+#include <graphviz/gvc.h>
 #include <stdio.h>
 
 int main_gradient(void)
 {
-    /* Build computational graph / Build model */
-    network boston_housing_regression = Network(3, (unsigned int[]){12, 5, 1}, (operation[]){op_relu, op_relu, op_linear}, (operation[]){op_derivative_relu, op_derivative_relu, op_derivative_linear});
+    Agraph_t *g;
+    Agnode_t *n, *m;
+    Agedge_t *e;
+    GVC_t *gvc;
 
-    neuron *inputs = getNeurons(getLayers(boston_housing_regression)[0]);
-    value output = getY(getNeurons(getLayers(boston_housing_regression)[2])[0]);
+    // Create a new graph
+    g = agopen("g", Agdirected, NULL);
 
-    value target = Value(NULL, NULL, op_linear, op_derivative_linear);
-    mean_squared_error mse = MSE(1, (value[]){output}, (value[]){target});
+    // Add nodes and an edge
+    n = agnode(g, "n", 1);
+    m = agnode(g, "m", 1);
+    e = agedge(g, n, m, NULL, 1);
 
-    /* Train model */
-    double average_mse = 0.0;
-    for (unsigned int i = 0; i < 10; i++)
-    {
-        for (unsigned int j = 0; j < 4; j++)
-        {
-            for (unsigned int k = 0; k < 100; k++)
-            {
-                for (unsigned int l = 0; l < 12; l++)
-                {
-                    setData(getY(inputs[l]), X_train[j * 100 + k][l]);
-                }
+    // Set some attributes using agsafeset
+    agsafeset(n, "color", "red", "");
+    agsafeset(e, "label", "Edge from n to m", "");
 
-                setData(target, Y_train[j * 100 + k]);
+    // Create a Graphviz context
+    gvc = gvContext();
 
-                forwardValue(mse);
-                backwardValue(mse);
-            }
-            updateValue(output, 0.01);
-            printf("Batch %d\n", j);
-        }
+    // Set the layout engine (e.g., dot, neato)
+    gvLayout(gvc, g, "dot");
 
-        /* Test model */
-        for (unsigned int j = 0; j < 100; j++)
-        {
-            for (unsigned int k = 0; k < 12; k++)
-            {
-                setData(getY(inputs[k]), X_test[j][k]);
-            }
-            setData(target, Y_test[j]);
+    // Render the graph to SVG
+    gvRenderFilename(gvc, g, "svg", "graph.svg");
 
-            forwardValue(mse);
-            average_mse += getData(mse);
-        }
+    // Free layout resources
+    gvFreeLayout(gvc, g);
 
-        printf("Training Epoch %d finished | Average MSE on test set: %f \n", i, average_mse / 100.0);
-        average_mse = 0.0;
-    }
+    // Free other resources
+    gvFreeContext(gvc);
+    agclose(g);
 
     return 0;
 }
