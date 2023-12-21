@@ -83,7 +83,7 @@ void forward(value v)
     setData(v, getForward(v->operation)(child_left_data, child_right_data));
 }
 
-void backward(value v)
+static void backward_recursive(value v)
 {
     if (v->child_left != NULL)
     {
@@ -97,7 +97,7 @@ void backward(value v)
         child_left_new_grad *= v->grad;
         setGrad(v->child_left, v->child_left->grad + child_left_new_grad);
 
-        backward(v->child_left);
+        backward_recursive(v->child_left);
     }
 
     if (v->child_right != NULL)
@@ -112,8 +112,14 @@ void backward(value v)
         child_right_new_grad *= v->grad;
         setGrad(v->child_right, v->child_right->grad + child_right_new_grad);
 
-        backward(v->child_right);
+        backward_recursive(v->child_right);
     }
+}
+
+void backward(value v)
+{
+    setGrad(v, 1.0);
+    backward_recursive(v);
 }
 
 void update(value v, double learning_rate)

@@ -13,28 +13,29 @@ int main_gradient(void)
     value target = Value(NULL, NULL, NULL);
     setData(target, 10.0);
     value error = Value(output, target, &sub);
-    setGrad(error, 1.0);
+    value squared_error = Value(error, NULL, &square);
+    setGrad(squared_error, 1.0);
 
-    forward(error);
-    draw(error, "first");
-    backward(error);
-    update(output, 0.01);
+    char filename[100];
+    for (int i = 0; i < 100; i++)
+    {
+        forward(squared_error);
+        snprintf(filename, sizeof(filename), "graphs/g_%d", i);
+        draw(squared_error, filename);
+        backward(squared_error);
+        update(squared_error, 0.01);
+        setData(target, 10.0);
+        printf("error: %f\n", getData(squared_error));
+        if (getData(squared_error) < 0.01)
+            break;
+    }
 
-    forward(error);
-    draw(error, "second");
-    backward(error);
-    update(output, 0.01);
-
-    forward(error);
-    draw(error, "third");
-    backward(error);
-    update(output, 0.01);
-
+    freeValue(squared_error);
+    freeValue(error);
+    freeValue(target);
     freeValue(output);
     freeValue(v2);
     freeValue(v1);
-    freeValue(target);
-    freeValue(error);
 
     return 0;
 }
