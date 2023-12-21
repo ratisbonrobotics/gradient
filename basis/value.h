@@ -13,9 +13,10 @@ value getChildRight(value v);
 operation getOperation(value v);
 void setGrad(value v, double grad);
 double getGrad(value v);
-void forwardValue(value v);
-void backwardValue(value v);
-void updateValue(value v, double learning_rate);
+void forward(value v);
+void backward(value v);
+void update(value v, double learning_rate);
+void draw(value v);
 void freeValue(value v);
 
 #endif // VALUE_H

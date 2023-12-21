@@ -11,7 +11,6 @@ extern struct operation_ mult;
 extern struct operation_ relu;
 extern struct operation_ sigmoid;
 extern struct operation_ tangent;
-extern struct operation_ gelu;
 
 operation_function getForward(operation op);
 operation_function getBackward(operation op);
