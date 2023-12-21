@@ -5,6 +5,43 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+/* operations */
+static inline double op_add(double d1, double d2)
+{
+    return d1 + d2;
+}
+
+static inline double op_derivative_add(double d1, double d2)
+{
+    (void)d1;
+    (void)d2;
+    return 1.0;
+}
+
+static inline double op_sub(double d1, double d2)
+{
+    return d1 - d2;
+}
+
+static inline double op_derivative_sub(double d1, double d2)
+{
+    (void)d1;
+    (void)d2;
+    return 1.0;
+}
+
+static inline double op_mult(double d1, double d2)
+{
+    return d1 * d2;
+}
+
+static inline double op_derivative_mult(double d1, double d2)
+{
+    (void)d1;
+    return d2;
+}
+
+/* activation functions */
 static inline double op_linear(double x, double _unused)
 {
     (void)_unused;
@@ -18,47 +55,17 @@ static inline double op_derivative_linear(double _unused1, double _unused2)
     return 0;
 }
 
-static inline double op_add(double d1, double d2)
-{
-    return d1 + d2;
-}
-
-static inline double op_derivative_add(double _unused, double grad)
-{
-    (void)_unused;
-    return grad;
-}
-
-static inline double op_sub(double d1, double d2)
-{
-    return d1 - d2;
-}
-
-static inline double op_derivative_sub(double _unused, double grad)
-{
-    (void)_unused;
-    return grad;
-}
-
-static inline double op_mult(double d1, double d2)
-{
-    return d1 * d2;
-}
-
-static inline double op_derivative_mult(double x, double grad)
-{
-    return x * grad;
-}
-
 static inline double op_relu(double x, double _unused)
 {
     (void)_unused;
     return (x > 0) ? x : 0;
 }
 
-static inline double op_derivative_relu(double x, double grad)
+static inline double op_derivative_relu(double x, double _unused)
 {
-    return (x > 0) ? grad : 0;
+    (void)x;
+    (void)_unused;
+    return 1.0;
 }
 
 static inline double op_sigmoid(double x, double _unused)
@@ -67,9 +74,10 @@ static inline double op_sigmoid(double x, double _unused)
     return 1 / (1 + exp(-x));
 }
 
-static inline double op_derivative_sigmoid(double x, double grad)
+static inline double op_derivative_sigmoid(double x, double _unused)
 {
-    return (1 - x) * x * grad;
+    (void)_unused;
+    return (1 - x) * x;
 }
 
 static inline double op_tanh(double x, double _unused)
@@ -78,9 +86,10 @@ static inline double op_tanh(double x, double _unused)
     return tanh(x);
 }
 
-static inline double op_derivative_tanh(double x, double grad)
+static inline double op_derivative_tanh(double x, double _unused)
 {
-    return (1 - pow(x, 2)) * grad;
+    (void)_unused;
+    return (1 - pow(x, 2));
 }
 
 typedef char *operation_symbol;
@@ -92,10 +101,11 @@ struct operation_
     operation_symbol symbol;
 };
 
-struct operation_ linear = {op_linear, op_derivative_linear, "lin"};
 struct operation_ add = {op_add, op_derivative_add, "+"};
 struct operation_ sub = {op_sub, op_derivative_sub, "-"};
 struct operation_ mult = {op_mult, op_derivative_mult, "*"};
+
+struct operation_ linear = {op_linear, op_derivative_linear, "lin"};
 struct operation_ relu = {op_relu, op_derivative_relu, "relu"};
 struct operation_ sigmoid = {op_sigmoid, op_derivative_sigmoid, "sigmoid"};
 struct operation_ tangent = {op_tanh, op_derivative_tanh, "tanh"};

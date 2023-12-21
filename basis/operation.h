@@ -4,10 +4,11 @@
 typedef struct operation_ *operation;
 typedef double (*operation_function)(double, double);
 
-extern struct operation_ linear;
 extern struct operation_ add;
 extern struct operation_ sub;
 extern struct operation_ mult;
+
+extern struct operation_ linear;
 extern struct operation_ relu;
 extern struct operation_ sigmoid;
 extern struct operation_ tangent;

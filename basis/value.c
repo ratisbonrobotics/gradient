@@ -87,12 +87,30 @@ void backward(value v)
 {
     if (v->child_left != NULL)
     {
-        setGrad(v->child_left, v->child_left->grad + getBackward(v->operation)(v->child_left->data, v->grad));
+        double child_right_data = 0.0;
+        if (v->child_right != NULL)
+        {
+            child_right_data = v->child_right->data;
+        }
+
+        double child_left_new_grad = getBackward(v->operation)(v->child_left->data, child_right_data);
+        child_left_new_grad *= v->grad;
+        setGrad(v->child_left, v->child_left->grad + child_left_new_grad);
+
         backward(v->child_left);
     }
     if (v->child_right != NULL)
     {
-        setGrad(v->child_right, v->child_right->grad + getBackward(v->operation)(v->child_right->data, v->grad));
+        double child_left_data = 0.0;
+        if (v->child_left != NULL)
+        {
+            child_left_data = v->child_left->data;
+        }
+
+        double child_right_new_grad = getBackward(v->operation)(child_left_data, v->child_right->data);
+        child_right_new_grad *= v->grad;
+        setGrad(v->child_right, v->child_right->grad + child_right_new_grad);
+
         backward(v->child_right);
     }
 }
