@@ -15,6 +15,8 @@ struct value_
 value Value(value child_left, value child_right, operation op, operation op_derivative)
 {
     value v = malloc(sizeof(struct value_));
+    v->data = 0.0;
+    v->grad = 0.0;
     v->child_left = child_left;
     v->child_right = child_right;
     v->operation = op;
@@ -69,6 +71,11 @@ operation getOperation(value v)
 
 void forwardValue(value v)
 {
+    if (v->child_left == NULL && v->child_right == NULL)
+    {
+        return;
+    }
+
     double child_left_data = 0.0;
     double child_right_data = 0.0;
 
@@ -102,6 +109,10 @@ void backwardValue(value v)
 
 void updateValue(value v, double learning_rate)
 {
+    if (v->child_left == NULL && v->child_right == NULL)
+    {
+        setData(v, v->data - learning_rate * v->grad);
+    }
     if (v->child_left != NULL)
     {
         updateValue(v->child_left, learning_rate);
@@ -110,7 +121,6 @@ void updateValue(value v, double learning_rate)
     {
         updateValue(v->child_right, learning_rate);
     }
-    setData(v, v->data - learning_rate * v->grad);
     setGrad(v, 0.0);
 }
 

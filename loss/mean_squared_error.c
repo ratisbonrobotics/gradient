@@ -24,5 +24,8 @@ mean_squared_error MSE(unsigned int size, value *outputs, value *targets)
     value normalisation = Value(NULL, NULL, op_linear, op_derivative_linear);
     setData(normalisation, 1.0 / size);
 
-    return Value(y_i_hat_minus_y_i_squared_sigma, normalisation, op_mult, op_derivative_mult);
+    value mse = Value(y_i_hat_minus_y_i_squared_sigma, normalisation, op_mult, op_derivative_mult);
+    setGrad(mse, 1.0);
+
+    return mse;
 }

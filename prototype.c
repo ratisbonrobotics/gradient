@@ -32,7 +32,7 @@ int main_gradient(void)
                 setData(target, Y_train[j * 100 + k]);
 
                 forwardValue(mse);
-                backwardValue(output);
+                backwardValue(mse);
             }
             updateValue(output, 0.01);
             printf("Batch %d\n", j);

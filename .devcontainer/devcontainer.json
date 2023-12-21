@@ -1,13 +1,14 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/universal:2",
-    "customizations": {
-      "vscode": {
-        "extensions": [
-          "ms-vscode.cpptools",
-          "GitHub.copilot",
-          "ms-vscode.makefile-tools",
-          "mathematic.vscode-pdf"
-        ]
-      }
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "GitHub.copilot",
+        "ms-vscode.makefile-tools",
+        "mathematic.vscode-pdf"
+      ]
     }
-  }
+  },
+  "postCreateCommand": "sudo apt update && sudo apt install -y libgraphviz-dev"
+}
