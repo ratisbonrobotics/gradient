@@ -1,3 +1,4 @@
+#include "layer.h"
 #include "neuron.h"
 #include "operation.h"
 #include "value.h"
@@ -10,7 +11,16 @@ int main_gradient(void)
     setData(v1, 3.0);
     value v2 = Value(NULL, NULL, NULL);
     setData(v2, 2.0);
-    neuron output = Neuron((value[]){v1, v2}, 2, &linear);
+
+    layer l = Layer((value[]){v1, v2}, 2, &linear, 15);
+
+    value inputs[15];
+    for (int i = 0; i < 15; i++)
+    {
+        inputs[i] = getY(getNeurons(l)[i]);
+    }
+
+    neuron output = Neuron(inputs, 15, &linear);
     value target = Value(NULL, NULL, NULL);
     setData(target, 10.0);
     value error = Value(getY(output), target, &sub);
@@ -26,6 +36,8 @@ int main_gradient(void)
         backward(squared_error);
         update(squared_error, 0.01);
         setData(target, 10.0);
+        setData(v1, 3.0);
+        setData(v2, 2.0);
         printf("error: %f\n", getData(squared_error));
         if (getData(squared_error) < 0.01)
             break;

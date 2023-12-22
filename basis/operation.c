@@ -67,6 +67,19 @@ static inline double op_derivative_square(double x, double _unused)
     return 2 * x;
 }
 
+static inline double op_abs(double x, double _unused)
+{
+    (void)_unused;
+    return fabs(x);
+}
+
+static inline double op_abs_derivative(double x, double _unused)
+{
+    (void)x;
+    (void)_unused;
+    return 1.0;
+}
+
 static inline double op_relu(double x, double _unused)
 {
     (void)_unused;
@@ -119,6 +132,7 @@ struct operation_ mult = {op_mult, op_derivative_mult, "*"};
 
 struct operation_ linear = {op_linear, op_derivative_linear, "lin"};
 struct operation_ square = {op_square, op_derivative_square, "^2"};
+struct operation_ absolute = {op_abs, op_abs_derivative, "abs"};
 struct operation_ relu = {op_relu, op_derivative_relu, "relu"};
 struct operation_ sigmoid = {op_sigmoid, op_derivative_sigmoid, "sigmoid"};
 struct operation_ tangent = {op_tanh, op_derivative_tanh, "tanh"};
