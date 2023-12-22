@@ -14,7 +14,7 @@ int main_gradient(void)
     value v2 = Value(NULL, NULL, NULL);
     setData(v2, 2.0);
 
-    layer l = Layer((value[]){v1, v2}, 2, &relu, LAYER_SIZE);
+    layer l = Layer((value[]){v1, v2}, 2, &leaky_relu, LAYER_SIZE);
 
     value inputs[LAYER_SIZE];
     for (int i = 0; i < LAYER_SIZE; i++)

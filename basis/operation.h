@@ -12,6 +12,7 @@ extern struct operation_ linear;
 extern struct operation_ square;
 extern struct operation_ absolute;
 extern struct operation_ relu;
+extern struct operation_ leaky_relu;
 extern struct operation_ sigmoid;
 extern struct operation_ tangent;
 

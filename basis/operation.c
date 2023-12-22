@@ -93,6 +93,18 @@ static inline double op_derivative_relu(double x, double _unused)
     return 1.0;
 }
 
+static inline double op_leaky_relu(double x, double _unused)
+{
+    (void)_unused;
+    return (x > 0.0) ? x : 0.0001 * x;
+}
+
+static inline double op_derivative_leaky_relu(double x, double _unused)
+{
+    (void)_unused;
+    return (x > 0.0) ? 1.0 : 0.0001;
+}
+
 static inline double op_sigmoid(double x, double _unused)
 {
     (void)_unused;
@@ -134,6 +146,7 @@ struct operation_ linear = {op_linear, op_derivative_linear, "lin"};
 struct operation_ square = {op_square, op_derivative_square, "^2"};
 struct operation_ absolute = {op_abs, op_abs_derivative, "abs"};
 struct operation_ relu = {op_relu, op_derivative_relu, "relu"};
+struct operation_ leaky_relu = {op_leaky_relu, op_derivative_leaky_relu, "leaky_relu"};
 struct operation_ sigmoid = {op_sigmoid, op_derivative_sigmoid, "sigmoid"};
 struct operation_ tangent = {op_tanh, op_derivative_tanh, "tanh"};
 
