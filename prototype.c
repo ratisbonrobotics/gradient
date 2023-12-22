@@ -30,12 +30,9 @@ int main_gradient(void)
     value squared_error = Value(error, NULL, &square);
     setGrad(squared_error, 1.0);
 
-    char filename[100];
     for (int i = 0; i < 100; i++)
     {
         forward(squared_error);
-        snprintf(filename, sizeof(filename), "graphs/g_%d", i);
-        draw(squared_error, filename);
         backward(squared_error);
         update(squared_error, 0.01);
         setData(target, 10.0);
@@ -45,6 +42,10 @@ int main_gradient(void)
         if (getData(squared_error) < 0.01)
             break;
     }
+
+    char filename[100];
+    snprintf(filename, sizeof(filename), "graphs/g_%d", 0);
+    draw(squared_error, filename);
 
     freeValue(squared_error);
     freeValue(error);
