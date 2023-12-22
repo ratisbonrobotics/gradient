@@ -48,3 +48,13 @@ unsigned int getBreadth(network net)
 {
     return net->breadth;
 }
+
+void freeNetwork(network net)
+{
+    for (unsigned int i = 0; i < net->depth; i++)
+    {
+        freeLayer(net->layers[i]);
+    }
+    free(net->layers);
+    free(net);
+}

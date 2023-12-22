@@ -11,5 +11,6 @@ value getY(neuron n);
 value *getW(neuron n);
 value getB(neuron n);
 unsigned int getInputSize(neuron n);
+void freeNeuron(neuron n);
 
 #endif // NEURON_H

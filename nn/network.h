@@ -10,5 +10,6 @@ network Network(value *inputs, unsigned int input_size, operation act, unsigned 
 layer *getLayers(network net);
 unsigned int getDepth(network net);
 unsigned int getBreadth(network net);
+void freeNetwork(network net);
 
 #endif // NETWORK_H

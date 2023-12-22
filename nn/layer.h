@@ -10,5 +10,6 @@ typedef struct layer_ *layer;
 layer Layer(value *inputs, unsigned int input_size, operation act, unsigned int size);
 neuron *getNeurons(layer l);
 unsigned int getSize(layer l);
+void freeLayer(layer l);
 
 #endif // LAYER_H

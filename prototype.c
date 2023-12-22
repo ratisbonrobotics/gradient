@@ -52,6 +52,8 @@ int main_gradient(void)
     freeValue(target);
     freeValue(v2);
     freeValue(v1);
+    freeNetwork(net);
+    freeNeuron(output);
 
     return 0;
 }
