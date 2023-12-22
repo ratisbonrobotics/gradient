@@ -27,3 +27,9 @@ neuron *getNeurons(layer l)
     assert(l != NULL);
     return l->neurons;
 }
+
+unsigned int getSize(layer l)
+{
+    assert(l != NULL);
+    return l->size;
+}

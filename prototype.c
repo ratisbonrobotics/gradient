@@ -1,11 +1,12 @@
-#include "layer.h"
+#include "network.h"
 #include "neuron.h"
 #include "operation.h"
 #include "value.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-#define LAYER_SIZE 15
+#define BREADTH 5
+#define DEPTH 2
 
 int main_gradient(void)
 {
@@ -14,15 +15,15 @@ int main_gradient(void)
     value v2 = Value(NULL, NULL, NULL);
     setData(v2, 2.0);
 
-    layer l = Layer((value[]){v1, v2}, 2, &leaky_relu, LAYER_SIZE);
+    network net = Network((value[]){v1, v2}, 2, &leaky_relu, DEPTH, BREADTH);
 
-    value inputs[LAYER_SIZE];
-    for (int i = 0; i < LAYER_SIZE; i++)
+    value inputs[BREADTH];
+    for (int i = 0; i < BREADTH; i++)
     {
-        inputs[i] = getY(getNeurons(l)[i]);
+        inputs[i] = getY(getNeurons(getLayers(net)[DEPTH - 1])[i]);
     }
 
-    neuron output = Neuron(inputs, LAYER_SIZE, &linear);
+    neuron output = Neuron(inputs, BREADTH, &linear);
     value target = Value(NULL, NULL, NULL);
     setData(target, 10.0);
     value error = Value(getY(output), target, &sub);
