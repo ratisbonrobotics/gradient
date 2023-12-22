@@ -39,7 +39,7 @@ neuron Neuron(value *inputs, unsigned int input_size, operation act)
             value xiwi = Value(inputs[i], n->w[i], &mult);
             if (sigma_xiwi == NULL)
             {
-                sigma_xiwi = Value(xiwi, NULL, &add);
+                sigma_xiwi = xiwi;
             }
             else
             {

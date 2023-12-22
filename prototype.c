@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define LAYER_SIZE 15
+
 int main_gradient(void)
 {
     value v1 = Value(NULL, NULL, NULL);
@@ -12,15 +14,15 @@ int main_gradient(void)
     value v2 = Value(NULL, NULL, NULL);
     setData(v2, 2.0);
 
-    layer l = Layer((value[]){v1, v2}, 2, &linear, 15);
+    layer l = Layer((value[]){v1, v2}, 2, &relu, LAYER_SIZE);
 
-    value inputs[15];
-    for (int i = 0; i < 15; i++)
+    value inputs[LAYER_SIZE];
+    for (int i = 0; i < LAYER_SIZE; i++)
     {
         inputs[i] = getY(getNeurons(l)[i]);
     }
 
-    neuron output = Neuron(inputs, 15, &linear);
+    neuron output = Neuron(inputs, LAYER_SIZE, &linear);
     value target = Value(NULL, NULL, NULL);
     setData(target, 10.0);
     value error = Value(getY(output), target, &sub);
