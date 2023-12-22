@@ -1,3 +1,4 @@
+#include "neuron.h"
 #include "operation.h"
 #include "value.h"
 #include <stdio.h>
@@ -9,10 +10,10 @@ int main_gradient(void)
     setData(v1, 3.0);
     value v2 = Value(NULL, NULL, NULL);
     setData(v2, 2.0);
-    value output = Value(v1, v2, &mult);
+    neuron output = Neuron((value[]){v1, v2}, 2, &linear);
     value target = Value(NULL, NULL, NULL);
     setData(target, 10.0);
-    value error = Value(output, target, &sub);
+    value error = Value(getY(output), target, &sub);
     value squared_error = Value(error, NULL, &square);
     setGrad(squared_error, 1.0);
 
@@ -33,7 +34,6 @@ int main_gradient(void)
     freeValue(squared_error);
     freeValue(error);
     freeValue(target);
-    freeValue(output);
     freeValue(v2);
     freeValue(v1);
 
