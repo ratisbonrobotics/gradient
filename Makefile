@@ -12,7 +12,10 @@ TARGET := executable.out
 CFLAGS_BASE := -std=iso9899:1999 -lcgraph -lgvc -lm -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -Wl,-z,relro,-z,now -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
 
 # Debug settings
-CFLAGS_DEBUG := $(CFLAGS_BASE) -g -fsanitize=undefined -fsanitize=address
+CFLAGS_DEBUG := $(CFLAGS_BASE) -g -fsanitize=undefined
+
+# Debug settings
+CFLAGS_DEBUG_SANATIZE := $(CFLAGS_BASE) -g -fsanitize=undefined -fsanitize=address
 
 # Release with assert settings
 CFLAGS_RELEASE_ASSERT := $(CFLAGS_BASE) -O3 -march=native -funroll-loops -flto
@@ -26,6 +29,11 @@ all: debug
 # Debug target
 debug: CFLAGS := $(CFLAGS_DEBUG)
 debug: $(TARGET)
+	@rm -f main.c main.o main.d
+
+# Debug with sanatize target
+debug_sanatize: CFLAGS := $(CFLAGS_DEBUG_SANATIZE)
+debug_sanatize: $(TARGET)
 	@rm -f main.c main.o main.d
 
 # Release with assert target
