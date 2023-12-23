@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BREADTH 5
+#define BREADTH 2
 #define DEPTH 2
 
 int main_gradient(void)

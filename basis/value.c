@@ -159,7 +159,10 @@ void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
 
     Agnode_t *op = agnode(g, op_name, 1);
     agsafeset(op, "label", getSymbol(v->operation), "");
-    agedge(g, op, parent, 0, 1);
+
+    char edge_name[128];
+    snprintf(edge_name, sizeof(edge_name), "edge_%p_%p", (void *)op, (void *)parent);
+    agedge(g, op, parent, edge_name, 1);
 
     if (v->child_left != NULL)
     {
@@ -172,7 +175,8 @@ void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
         snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->child_left->data, v->child_left->grad);
         agsafeset(child_left, "label", label, "");
 
-        agedge(g, child_left, op, 0, 1);
+        snprintf(edge_name, sizeof(edge_name), "edge_%p_%p", (void *)v->child_left, (void *)op);
+        agedge(g, child_left, op, edge_name, 1);
         draw_recursive(g, v->child_left, child_left);
     }
 
@@ -187,7 +191,8 @@ void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)
         snprintf(label, sizeof(label), "{data %.4f | grad %.4f}", v->child_right->data, v->child_right->grad);
         agsafeset(child_right, "label", label, "");
 
-        agedge(g, child_right, op, 0, 1);
+        snprintf(edge_name, sizeof(edge_name), "edge_%p_%p", (void *)v->child_right, (void *)op);
+        agedge(g, child_right, op, edge_name, 1);
         draw_recursive(g, v->child_right, child_right);
     }
 }
