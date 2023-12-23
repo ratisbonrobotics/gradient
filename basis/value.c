@@ -4,6 +4,9 @@
 #include <graphviz/gvc.h>
 #include <stdlib.h>
 
+value all_values[1024];
+unsigned int all_values_index = 0;
+
 struct value_
 {
     double data;
@@ -16,6 +19,11 @@ struct value_
 value Value(value child_left, value child_right, operation op)
 {
     value v = malloc(sizeof(struct value_));
+    all_values[all_values_index++] = v;
+    if (all_values_index == 1024)
+    {
+        assert(0 && "all_values_index == 1024");
+    }
     v->data = 0.0;
     v->grad = 0.0;
     v->child_left = child_left;
@@ -208,8 +216,10 @@ void draw(value v, char *filename)
     agclose(g);
 }
 
-void freeValue(value v)
+void freeAllValues()
 {
-    assert(v != NULL);
-    free(v);
+    for (unsigned int i = 0; i < all_values_index; i++)
+    {
+        free(all_values[i]);
+    }
 }

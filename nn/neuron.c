@@ -114,14 +114,8 @@ void freeNeuron(neuron n)
 
     if (n->w != NULL)
     {
-        for (unsigned int i = 0; i < n->input_size; i++)
-        {
-            freeValue(n->w[i]);
-        }
         free(n->w);
     }
 
-    freeValue(n->b);
-    freeValue(n->y);
     free(n);
 }

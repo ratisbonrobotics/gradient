@@ -47,11 +47,7 @@ int main_gradient(void)
     snprintf(filename, sizeof(filename), "graphs/g_%d", 0);
     draw(squared_error, filename);
 
-    freeValue(squared_error);
-    freeValue(error);
-    freeValue(target);
-    freeValue(v2);
-    freeValue(v1);
+    freeAllValues();
     freeNetwork(net);
     freeNeuron(output);
 

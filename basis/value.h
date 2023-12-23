@@ -17,6 +17,6 @@ void forward(value v);
 void backward(value v);
 void update(value v, double learning_rate);
 void draw(value v, char *filename);
-void freeValue(value v);
+void freeAllValues(void);
 
 #endif // VALUE_H
