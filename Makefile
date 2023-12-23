@@ -12,13 +12,13 @@ TARGET := executable.out
 CFLAGS_BASE := -std=iso9899:1999 -lcgraph -lgvc -lm -Wall -Wextra -Wshadow -Wpedantic -Wstrict-prototypes -Wstrict-aliasing -Wstrict-overflow -Wconversion -Werror -Wl,-z,relro,-z,now -MMD -MP $(shell find . -type d -not -path '*/\.*' | sed 's/^/-I/')
 
 # Debug settings
-CFLAGS_DEBUG := $(CFLAGS_BASE) -g -fsanitize=undefined
+CFLAGS_DEBUG := $(CFLAGS_BASE) -g
 
-# Debug settings
-CFLAGS_DEBUG_SANATIZE := $(CFLAGS_BASE) -g -fsanitize=undefined -fsanitize=address
+# Debug with sanatize settings
+CFLAGS_DEBUG_SANATIZE := $(CFLAGS_DEBUG) -fsanitize=undefined -fsanitize=address
 
 # Release with assert settings
-CFLAGS_RELEASE_ASSERT := $(CFLAGS_BASE) -O3 -march=native -funroll-loops -flto
+CFLAGS_RELEASE_ASSERT := $(CFLAGS_BASE) -O3 -march=native -funroll-loops -flto 
 
 # Release settings (no assert)
 CFLAGS_RELEASE := $(CFLAGS_RELEASE_ASSERT) -DNDEBUG
@@ -48,13 +48,13 @@ release: $(TARGET)
 
 # Target rules
 $(TARGET): main.o $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS) 
 
 main.o: main.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 main.c:
 	echo "extern int main_$(REPO_NAME)(void);" > main.c

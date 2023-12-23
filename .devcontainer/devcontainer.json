@@ -6,7 +6,8 @@
         "ms-vscode.cpptools",
         "GitHub.copilot",
         "ms-vscode.makefile-tools",
-        "mathematic.vscode-pdf"
+        "mathematic.vscode-pdf",
+        "sndst00m.vscode-native-svg-preview"
       ]
     }
   },
