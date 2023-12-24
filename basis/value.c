@@ -7,33 +7,19 @@
 value all_values[1024];
 unsigned int all_values_index = 0;
 
-#define CLIPPING_VALUE 1.0
-
-#define CLIP_GRADIENT(g)     \
-    if (g > CLIPPING_VALUE)  \
-    {                        \
-        g = CLIPPING_VALUE;  \
-    }                        \
-    if (g < -CLIPPING_VALUE) \
-    {                        \
-        g = -CLIPPING_VALUE; \
-    }
-
-#define SCALING_VALUE 100.0
-
 #define SCALE_GRADIENT(g) \
-    g /= SCALING_VALUE;
+    g /= 100.0;
 
 struct value_
 {
-    double data;
-    double grad;
+    tensor data;
+    tensor grad;
     value child_left;
     value child_right;
     operation operation;
 };
 
-value Value(value child_left, value child_right, operation op)
+value Value(unsigned int x, unsigned int y, unsigned int z, value child_left, value child_right, operation op)
 {
     value v = malloc(sizeof(struct value_));
     all_values[all_values_index++] = v;
@@ -41,8 +27,8 @@ value Value(value child_left, value child_right, operation op)
     {
         assert(0 && "all_values_index == 1024");
     }
-    v->data = 0.0;
-    v->grad = 0.0;
+    v->data = Tensor(x, y, z);
+    v->grad = Tensor(x, y, z);
     v->child_left = child_left;
     v->child_right = child_right;
     v->operation = op;
@@ -59,22 +45,22 @@ value getChildRight(value v)
     return v->child_right;
 }
 
-void setData(value v, double data)
+void setData(value v, tensor data)
 {
     v->data = data;
 }
 
-double getData(value v)
+tensor getData(value v)
 {
     return v->data;
 }
 
-void setGrad(value v, double grad)
+void setGrad(value v, tensor grad)
 {
     v->grad = grad;
 }
 
-double getGrad(value v)
+tensor getGrad(value v)
 {
     return v->grad;
 }
@@ -91,8 +77,8 @@ void forward(value v)
         return;
     }
 
-    double child_left_data = 0.0;
-    double child_right_data = 0.0;
+    tensor child_left_data = NULL;
+    tensor child_right_data = NULL;
 
     if (v->child_left != NULL)
     {
@@ -105,39 +91,41 @@ void forward(value v)
         child_right_data = v->child_right->data;
     }
 
-    setData(v, getForward(v->operation)(child_left_data, child_right_data));
+    getForward(v->operation)(v->data, child_left_data, child_right_data);
 }
 
 static void backward_recursive(value v)
 {
     if (v->child_left != NULL)
     {
-        double child_right_data = 0.0;
+        tensor child_right_data = NULL;
         if (v->child_right != NULL)
         {
             child_right_data = v->child_right->data;
         }
 
-        double child_left_new_grad = getBackward(v->operation)(v->child_left->data, child_right_data);
-        child_left_new_grad *= v->grad;
-        SCALE_GRADIENT(child_left_new_grad);
-        setGrad(v->child_left, v->child_left->grad + child_left_new_grad);
+        tensor temp = copyTensor(v->child_left->grad);
+        getBackward(v->operation)(temp, v->child_left->data, child_right_data);
+        hadamardTensor(temp, temp, v->grad);
+        addTensor(v->child_left->grad, v->child_left->grad, temp);
+        freeTensor(temp);
 
         backward_recursive(v->child_left);
     }
 
     if (v->child_right != NULL)
     {
-        double child_left_data = 0.0;
+        tensor child_left_data = NULL;
         if (v->child_left != NULL)
         {
             child_left_data = v->child_left->data;
         }
 
-        double child_right_new_grad = getBackward(v->operation)(v->child_right->data, child_left_data);
-        child_right_new_grad *= v->grad;
-        SCALE_GRADIENT(child_right_new_grad);
-        setGrad(v->child_right, v->child_right->grad + child_right_new_grad);
+        tensor temp = copyTensor(v->child_right->grad);
+        getBackward(v->operation)(temp, v->child_right->data, child_left_data);
+        hadamardTensor(temp, temp, v->grad);
+        addTensor(v->child_right->grad, v->child_right->grad, temp);
+        freeTensor(temp);
 
         backward_recursive(v->child_right);
     }
@@ -145,7 +133,7 @@ static void backward_recursive(value v)
 
 void backward(value v)
 {
-    setGrad(v, 1.0);
+    fillData(v->grad, 1.0);
     backward_recursive(v);
 }
 
@@ -153,7 +141,11 @@ void update(value v, double learning_rate)
 {
     if (v->child_left == NULL && v->child_right == NULL)
     {
-        setData(v, v->data - learning_rate * v->grad);
+        tensor temp = copyTensor(v->grad);
+        fillData(temp, learning_rate);
+        hadamardTensor(temp, v->grad, temp);
+        subTensor(v->grad, v->grad, temp);
+        freeTensor(temp);
     }
     if (v->child_left != NULL)
     {
@@ -163,7 +155,7 @@ void update(value v, double learning_rate)
     {
         update(v->child_right, learning_rate);
     }
-    setGrad(v, 0.0);
+    fillData(v->grad, 0.0);
 }
 
 void draw_recursive(Agraph_t *g, value v, Agnode_t *parent)

@@ -6,39 +6,43 @@
 #endif
 
 /* operations */
-static inline double op_add(double d1, double d2)
+static void op_add(tensor t, tensor a, tensor b)
 {
-    return d1 + d2;
+    addTensor(t, a, b);
 }
 
-static inline double op_derivative_add(double d1, double d2)
+static void op_derivative_add(tensor t, tensor a, tensor b)
 {
-    (void)d1;
-    (void)d2;
-    return 1.0;
+    fillTensor(t, 1.0);
 }
 
-static inline double op_sub(double d1, double d2)
+static void op_sub(tensor t, tensor a, tensor b)
 {
-    return d1 - d2;
+    subTensor(t, a, b);
 }
 
-static inline double op_derivative_sub(double d1, double d2)
+static void op_derivative_sub(tensor t, tensor a, tensor b)
 {
-    (void)d1;
-    (void)d2;
-    return 1.0;
+    fillTensor(t, 1.0);
 }
 
-static inline double op_mult(double d1, double d2)
+static void op_hadamard(tensor t, tensor a, tensor b)
 {
-    return d1 * d2;
+    hadamardTensor(t, a, b);
 }
 
-static inline double op_derivative_mult(double d1, double d2)
+static inline double op_derivative_hadamard(tensor t, tensor a, tensor b)
 {
-    (void)d1;
-    return d2;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                setDataTensor(t, i, j, k, getDataTensor(b, i, j, k));
+            }
+        }
+    }
 }
 
 /* activation functions */
@@ -140,6 +144,7 @@ struct operation_
 
 struct operation_ add = {op_add, op_derivative_add, "+"};
 struct operation_ sub = {op_sub, op_derivative_sub, "-"};
+struct operation_ hadamard = {op_hadamard, op_derivative_hadamard, ".*"};
 struct operation_ mult = {op_mult, op_derivative_mult, "*"};
 
 struct operation_ linear = {op_linear, op_derivative_linear, "lin"};

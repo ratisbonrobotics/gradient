@@ -1,11 +1,14 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
+#include "tensor.h"
+
 typedef struct operation_ *operation;
-typedef double (*operation_function)(double, double);
+typedef void (*operation_function)(tensor, tensor, tensor);
 
 extern struct operation_ add;
 extern struct operation_ sub;
+extern struct operation_ hadamard;
 extern struct operation_ mult;
 
 extern struct operation_ linear;
