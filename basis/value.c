@@ -7,6 +7,23 @@
 value all_values[1024];
 unsigned int all_values_index = 0;
 
+#define CLIPPING_VALUE 1.0
+
+#define CLIP_GRADIENT(g)     \
+    if (g > CLIPPING_VALUE)  \
+    {                        \
+        g = CLIPPING_VALUE;  \
+    }                        \
+    if (g < -CLIPPING_VALUE) \
+    {                        \
+        g = -CLIPPING_VALUE; \
+    }
+
+#define SCALING_VALUE 100.0
+
+#define SCALE_GRADIENT(g) \
+    g /= SCALING_VALUE;
+
 struct value_
 {
     double data;
@@ -103,6 +120,7 @@ static void backward_recursive(value v)
 
         double child_left_new_grad = getBackward(v->operation)(v->child_left->data, child_right_data);
         child_left_new_grad *= v->grad;
+        SCALE_GRADIENT(child_left_new_grad);
         setGrad(v->child_left, v->child_left->grad + child_left_new_grad);
 
         backward_recursive(v->child_left);
@@ -118,6 +136,7 @@ static void backward_recursive(value v)
 
         double child_right_new_grad = getBackward(v->operation)(v->child_right->data, child_left_data);
         child_right_new_grad *= v->grad;
+        SCALE_GRADIENT(child_right_new_grad);
         setGrad(v->child_right, v->child_right->grad + child_right_new_grad);
 
         backward_recursive(v->child_right);
