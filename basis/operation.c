@@ -31,7 +31,7 @@ static void op_hadamard(tensor t, tensor a, tensor b)
     hadamardTensor(t, a, b);
 }
 
-static inline double op_derivative_hadamard(tensor t, tensor a, tensor b)
+static void op_derivative_hadamard(tensor t, tensor a, tensor b)
 {
     for (unsigned int i = 0; i < getX(t); i++)
     {
@@ -45,92 +45,213 @@ static inline double op_derivative_hadamard(tensor t, tensor a, tensor b)
     }
 }
 
+static void op_mult(tensor t, tensor a, tensor b)
+{
+    multTensor(t, a, b);
+}
+
+static void op_derivative_mult(tensor t, tensor a, tensor b)
+{
+    assert(getX(t) == getX(a) && getX(t) == getX(b));
+    assert(getY(a) == getZ(b));
+    assert(getY(t) == getY(b) && getZ(t) == getZ(a));
+
+    for (unsigned int i = 0; i < getX(t); i++)
+    { // Batch dimension
+        for (unsigned int j = 0; j < getY(t); j++)
+        { // Rows in 't', match rows in 'b'
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {                                    // Columns in 't', match columns in 'a'
+                fillDataTensor(t, i, j, k, 0.0); // Initialize to zero
+                for (unsigned int l = 0; l < getY(a); l++)
+                {                                                                                     // Sum over this dimension
+                    setDataTensor(t, i, j, k, getDataTensor(t, i, j, k) + getDataTensor(b, i, l, j)); // Transposed access for 'b'
+                }
+            }
+        }
+    }
+}
+
 /* activation functions */
-static inline double op_linear(double x, double _unused)
+static void op_linear(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return x;
+    (void)_unused_b;
+    copyTensor(t, a);
 }
 
-static inline double op_derivative_linear(double x, double _unused)
+static void op_derivative_linear(tensor t, tensor _unused_a, tensor _unused_b)
 {
-    (void)x;
-    (void)_unused;
-    return 1.0;
+    (void)_unused_a;
+    (void)_unused_b;
+    fillTensor(t, 1.0);
 }
 
-static inline double op_square(double x, double _unused)
+static double square(double x)
 {
-    (void)_unused;
     return pow(x, 2);
 }
 
-static inline double op_derivative_square(double x, double _unused)
+static void op_hadamard_square(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
+    (void)_unused_b;
+    copyTensor(t, a);
+    applyTensor(t, square);
+}
+
+static double double_(double x)
+{
     return 2 * x;
 }
 
-static inline double op_abs(double x, double _unused)
+static void op_derivative_hadamard_square(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return fabs(x);
+    (void)_unused_b;
+    copyTensor(t, a);
+    applyTensor(t, double_);
 }
 
-static inline double op_abs_derivative(double x, double _unused)
+static void op_abs(tensor t, tensor a, tensor _unused_b)
 {
-    (void)x;
-    (void)_unused;
-    return 1.0;
+    (void)_unused_b;
+    copyTensor(t, a);
+    applyTensor(t, fabs);
 }
 
-static inline double op_relu(double x, double _unused)
+static void op_abs_derivative(tensor t, tensor _unused_a, tensor _unused_b)
 {
-    (void)_unused;
-    return (x > 0.0) ? x : 0.0;
+    (void)_unused_a;
+    (void)_unused_b;
+    fillTensor(t, 1.0);
 }
 
-static inline double op_derivative_relu(double x, double _unused)
+static void op_relu(tensor t, tensor a, tensor _unused_b)
 {
-    (void)x;
-    (void)_unused;
-    return 1.0;
+    (void)_unused_b;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, (val > 0.0) ? val : 0.0);
+            }
+        }
+    }
 }
 
-static inline double op_leaky_relu(double x, double _unused)
+static void op_derivative_relu(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return (x > 0.0) ? x : 0.0001 * x;
+    (void)_unused_b;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, (val > 0.0) ? 1.0 : 0.0);
+            }
+        }
+    }
 }
 
-static inline double op_derivative_leaky_relu(double x, double _unused)
+static void op_leaky_relu(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return (x > 0.0) ? 1.0 : 0.0001;
+    (void)_unused_b;
+    const double alpha = 0.01; // Leaky ReLU coefficient
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, (val > 0.0) ? val : alpha * val);
+            }
+        }
+    }
 }
 
-static inline double op_sigmoid(double x, double _unused)
+static void op_derivative_leaky_relu(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return 1 / (1 + exp(-x));
+    (void)_unused_b;
+    const double alpha = 0.01; // Leaky ReLU coefficient
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, (val > 0.0) ? 1.0 : alpha);
+            }
+        }
+    }
 }
 
-static inline double op_derivative_sigmoid(double x, double _unused)
+static void op_sigmoid(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return (1 - x) * x;
+    (void)_unused_b;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, 1.0 / (1.0 + exp(-val)));
+            }
+        }
+    }
 }
 
-static inline double op_tanh(double x, double _unused)
+static void op_derivative_sigmoid(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return tanh(x);
+    (void)_unused_b;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double sigmoid_val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, sigmoid_val * (1.0 - sigmoid_val));
+            }
+        }
+    }
 }
 
-static inline double op_derivative_tanh(double x, double _unused)
+static void op_tanh(tensor t, tensor a, tensor _unused_b)
 {
-    (void)_unused;
-    return (1 - pow(x, 2));
+    (void)_unused_b;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, tanh(val));
+            }
+        }
+    }
+}
+
+static void op_derivative_tanh(tensor t, tensor a, tensor _unused_b)
+{
+    (void)_unused_b;
+    for (unsigned int i = 0; i < getX(t); i++)
+    {
+        for (unsigned int j = 0; j < getY(t); j++)
+        {
+            for (unsigned int k = 0; k < getZ(t); k++)
+            {
+                double tanh_val = getDataTensor(a, i, j, k);
+                setDataTensor(t, i, j, k, 1.0 - pow(tanh_val, 2));
+            }
+        }
+    }
 }
 
 typedef char *operation_symbol;
@@ -148,7 +269,7 @@ struct operation_ hadamard = {op_hadamard, op_derivative_hadamard, ".*"};
 struct operation_ mult = {op_mult, op_derivative_mult, "*"};
 
 struct operation_ linear = {op_linear, op_derivative_linear, "lin"};
-struct operation_ square = {op_square, op_derivative_square, "^2"};
+struct operation_ hadamard_square = {op_hadamard_square, op_derivative_hadamard_square, ".*^2"};
 struct operation_ absolute = {op_abs, op_abs_derivative, "abs"};
 struct operation_ relu = {op_relu, op_derivative_relu, "relu"};
 struct operation_ leaky_relu = {op_leaky_relu, op_derivative_leaky_relu, "leaky_relu"};

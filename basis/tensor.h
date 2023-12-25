@@ -5,7 +5,6 @@ typedef struct tensor_ *tensor;
 typedef double (*scalar_operation)(double);
 
 tensor Tensor(unsigned int x, unsigned int y, unsigned int z);
-tensor copyTensor(tensor t);
 unsigned int getX(tensor t);
 unsigned int getY(tensor t);
 unsigned int getZ(tensor t);
@@ -17,6 +16,7 @@ void subTensor(tensor t, tensor a, tensor b);
 void multTensor(tensor t, tensor a, tensor b);
 void hadamardTensor(tensor t, tensor a, tensor b);
 void applyTensor(tensor t, scalar_operation op);
+void copyTensor(tensor t, tensor a);
 void freeTensor(tensor t);
 
 #endif // TENSOR_H

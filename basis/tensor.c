@@ -45,22 +45,6 @@ unsigned int getZ(tensor t)
     return t->z;
 }
 
-tensor copyTensor(tensor t)
-{
-    tensor c = Tensor(t->x, t->y, t->z);
-    for (unsigned int i = 0; i < t->x; i++)
-    {
-        for (unsigned int j = 0; j < t->y; j++)
-        {
-            for (unsigned int k = 0; k < t->z; k++)
-            {
-                c->data[i][j][k] = t->data[i][j][k];
-            }
-        }
-    }
-    return c;
-}
-
 void setDataTensor(tensor t, unsigned int x, unsigned int y, unsigned int z, double data)
 {
     t->data[x][y][z] = data;
@@ -163,6 +147,21 @@ void applyTensor(tensor t, scalar_operation op)
             for (unsigned int k = 0; k < t->z; k++)
             {
                 t->data[i][j][k] = op(t->data[i][j][k]);
+            }
+        }
+    }
+}
+
+void copyTensor(tensor t, tensor a)
+{
+    assert(t->x == a->x && t->y == a->y && t->z == a->z);
+    for (unsigned int i = 0; i < t->x; i++)
+    {
+        for (unsigned int j = 0; j < t->y; j++)
+        {
+            for (unsigned int k = 0; k < t->z; k++)
+            {
+                t->data[i][j][k] = a->data[i][j][k];
             }
         }
     }

@@ -104,7 +104,8 @@ static void backward_recursive(value v)
             child_right_data = v->child_right->data;
         }
 
-        tensor temp = copyTensor(v->child_left->grad);
+        tensor temp = Tensor(getX(v->child_left->grad), getY(v->child_left->grad), getZ(v->child_left->grad));
+        copyTensor(temp, v->child_left->grad);
         getBackward(v->operation)(temp, v->child_left->data, child_right_data);
         hadamardTensor(temp, temp, v->grad);
         addTensor(v->child_left->grad, v->child_left->grad, temp);
@@ -121,7 +122,8 @@ static void backward_recursive(value v)
             child_left_data = v->child_left->data;
         }
 
-        tensor temp = copyTensor(v->child_right->grad);
+        tensor temp = Tensor(getX(v->child_right->grad), getY(v->child_right->grad), getZ(v->child_right->grad));
+        copyTensor(temp, v->child_right->grad);
         getBackward(v->operation)(temp, v->child_right->data, child_left_data);
         hadamardTensor(temp, temp, v->grad);
         addTensor(v->child_right->grad, v->child_right->grad, temp);
@@ -141,7 +143,8 @@ void update(value v, double learning_rate)
 {
     if (v->child_left == NULL && v->child_right == NULL)
     {
-        tensor temp = copyTensor(v->grad);
+        tensor temp = Tensor(getX(v->grad), getY(v->grad), getZ(v->grad));
+        copyTensor(temp, v->grad);
         fillData(temp, learning_rate);
         hadamardTensor(temp, v->grad, temp);
         subTensor(v->grad, v->grad, temp);

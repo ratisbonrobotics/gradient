@@ -12,7 +12,7 @@ extern struct operation_ hadamard;
 extern struct operation_ mult;
 
 extern struct operation_ linear;
-extern struct operation_ square;
+extern struct operation_ hadamard_square;
 extern struct operation_ absolute;
 extern struct operation_ relu;
 extern struct operation_ leaky_relu;
